@@ -1,0 +1,112 @@
+---
+name: 3coding-visual
+description: "数学建模编程实现与数据图表生成阶段。根据 ANALYSIS_MODELING_REPORT.md 编写可复现代码、运行求解、验证约束、输出 RESULTS_REPORT.md 并生成论文可用的数据驱动图表 PDF。"
+---
+
+# 编程实现与数据图表生成
+
+本 skill 承接 `2analysis-modeling`。目标是把 `reports/ANALYSIS_MODELING_REPORT.md` 里的模型和算法落实为可复现程序，跑出可信结果，并生成论文中需要的数据型图表。
+
+## 数学建模规范参考
+
+如需领域判断，读取 `../_references/math_modeling_norms.md` 中的“题型防错速查”“代码实现与结果”“编码阶段常见错误”和“图表与可视化”小节。该文件只作为规范知识库，不新增本阶段的固定产物。
+
+## 阶段边界
+
+- 本阶段负责：代码、实验运行、结果、结果表、数据驱动图表。
+- 本阶段不负责：技术路线图、算法流程图、系统架构图、概念示意图。这些交给 `4drawio`。
+- 本阶段不写论文正文，只为 `5writing` 提供可信数值和图表资产。
+
+
+### Step 1: 代码结构
+
+按 `plan.md` 中"项目目录结构"创建 `code/` 和 `figures/` 骨架，再开始写代码。子问题数不一定是 3，按赛题实际数量调整。
+
+
+### Step 2: 逐子问题实现
+
+按子问题顺序实现，不要一次性写完不跑。
+
+每个子问题必须完成：
+
+1. 读取所需数据。
+2. 实现模型或算法。
+3. 验证约束。
+4. 输出核心结果。
+5. 绘制丰富的图表。
+6. 在 `reports/RESULTS_REPORT.md` 中写清楚方法、关键数值和校验结果。
+
+优化类问题必须先保证可行解，再优化目标值。预测类问题必须做训练/验证划分或合理误差评估。评价类问题必须说明指标方向、归一化方法和权重来源。
+
+### Step 3: 结果文件格式
+
+
+AI 在实现、求解和作图过程中，必须把关键中间过程保存成数据并做好记录，例如清洗后的数据摘要、模型参数、迭代历史、约束检查、灵敏度分析过程、图表所用数据和运行日志。中间数据优先保存到 `figures/` 或 `code/outputs/`，并在 `reports/RESULTS_REPORT.md` 中说明文件用途。
+
+`reports/RESULTS_REPORT.md` 推荐结构：
+
+```markdown
+# 计算结果
+
+## 运行环境
+## 数据读取与预处理
+## 问题一结果
+## 问题二结果
+## 问题三结果
+## 灵敏度分析
+## 约束与一致性校验
+## 与建模报告的一致性说明
+## 可复现运行方式
+```
+
+所有数据和图表结果都必须出现在 `reports/RESULTS_REPORT.md` 中引用
+
+### Step 4: 生成数据驱动图表
+
+根据 `reports/ANALYSIS_MODELING_REPORT.md` 和 `reports/RESULTS_REPORT.md` 规划图表，生成 PDF 到 `figures/`。绘图规范全文见 `../_references/figure_style.md`（字体/字号/线宽/配色/尺寸/导出/中文乱码排查），本节只列强制步骤。
+
+**4.1 统一风格模块（强制）**
+
+所有 Matplotlib/Seaborn 图必须通过 `scripts/mm_plot_style.py` 出图，不允许各脚本自行设置 `rcParams`、字体或 `savefig`：
+
+```bash
+cp ../../.agents/skills/3coding-visual/scripts/mm_plot_style.py code/   # 与绘图脚本同级，保证 code/ 可独立复现
+```
+
+```python
+from mm_plot_style import apply_style, COLORS, figsize, save_fig
+
+apply_style(lang="zh")                      # 中文论文；英文论文 lang="en"；需要衬线用 font="serif"
+fig, ax = plt.subplots(figsize=figsize("full"))   # "full"=14 cm, "half"=7.5 cm（并排）
+ax.plot(x, y, color=COLORS[0], label="预测值")
+save_fig(fig, "figures/fig_q1_fit", source="results/q1_fit.csv", params={"seed": 0})
+```
+
+`apply_style` 自动选择当前系统上 Matplotlib 能识别且轮廓为 TrueType 的中文字体（Linux 上通常是 WenQuanYi Micro Hei / AR PL UMing），并配合 `pdf.fonttype=42` 导出；这是修复“中文图经 DOCX 转 PNG 后乱码”的根因方案，不要用 `pdf.fonttype=3` 或直接写死 `Noto Sans CJK SC` 绕过。`save_fig` 默认输出 PDF + PNG，自动运行 PDF 字体自检，并把脚本、数据来源、参数、字体写入 `figures/_manifest.json`，作为图表的生成记录。
+
+**4.2 图表内容要求**
+
+典型图表：
+
+- 预测类：真实值-预测值对比、误差分布、指标对比。
+- 优化类：收敛曲线、成本对比、资源利用率、方案前后对比。
+- 评价类：综合得分排序、雷达图、热力图、敏感性曲线。
+- 数据理解：分布图、趋势图、相关性图、箱线图。
+
+图表要求：
+
+- 每张图只回答一个问题；图内文字与论文语言一致（中文论文中文坐标轴/图例），不在图内写大标题，标题交给论文 caption（Typst 的 `caption:` 或 LaTeX 的 `\caption{}`）。
+- 只用 `COLORS` / `PALETTES` 与 `SEQUENTIAL_CMAP`、`DIVERGING_CMAP`，不用 jet/rainbow；同类图配色与线型保持一致。
+- 图宽取 `figsize("full"|"half"|...)`，不要超过 16 cm 版心；基准字号 9 pt，任何文字不小于 5 pt。
+- 多面板用 `label_panels(axes)` 加 (a)(b)(c)，面板对齐。
+- 不生成流程图/架构图/路线图。
+
+**4.3 出图后检查（强制）**
+
+```bash
+python3 ../../.agents/skills/3coding-visual/scripts/check_figures.py --expect-cjk figures/   # 英文论文去掉 --expect-cjk
+```
+
+任何 `FAIL`（字体未嵌入、CFF 轮廓按 TrueType 嵌入、中文提取不到、缺字）必须修好再进入 `5writing`。`check_figures.py` 依赖同目录的 `mm_plot_style.py`，原地运行即可。
+
+图表可以由主程序或独立脚本生成，不强制固定脚本名。无论采用哪种方式，`figures/_manifest.json` 必须能对应到每张图的数据来源与生成脚本，并在 `reports/RESULTS_REPORT.md` 中引用。

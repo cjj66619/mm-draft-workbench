@@ -1,0 +1,13 @@
+# 必需（数据处理 / 模型 / 绘图）
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+matplotlib>=3.7
+
+# 可选：PDF 图版式检查、PDF→PNG（缺了 fig_layout_lint 只做对象级检查）
+pymupdf>=1.23
+# 可选：读 Excel 附件
+openpyxl>=3.1
+# 可选：机器学习基线 / 读 project.yaml
+scikit-learn>=1.3
+PyYAML>=6.0

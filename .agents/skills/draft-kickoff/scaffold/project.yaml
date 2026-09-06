@@ -1,0 +1,25 @@
+# 项目元数据（机器可读；人看 README.md）
+name: "{{PROJECT}}"
+title: "{{TITLE}}"
+contest: "{{CONTEST}}"
+language: zh
+created: "{{DATE}}"
+generator:
+  name: mm-draft-workbench
+  version: "{{GEN_VERSION}}"
+  platform: "{{GEN_PLATFORM}}"
+targets:
+  python: ">=3.10"
+  os: [windows, linux, macos]
+entrypoints:
+  doctor: python doctor.py
+  reproduce: python run_all.py
+  figures_only: python run_all.py figures
+paper:
+  docx: paper/main.docx
+  source_of_truth: docx        # docx | markdown ；冻结后为 docx
+  markdown_sections: paper/sections
+figures:
+  layout: folder               # 一图一文件夹
+  index: figures/README.md
+  review: figures/FIGURE_REVIEW.md

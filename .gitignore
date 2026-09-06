@@ -1,0 +1,14 @@
+# 生成的初稿项目（交付给用户，不入库；需要归档另开分支）
+projects/
+
+__pycache__/
+*.pyc
+.venv/
+*.part
+_docx_body.*
+_docx_shadow/
+docx_render/
+~$*.docx
+*.docx.bak-*
+.DS_Store
+Thumbs.db
