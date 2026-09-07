@@ -1,0 +1,22 @@
+{
+  "params_source": "results/q1_summary.json (pooled)",
+  "params": {
+    "A": 14.961343033300789,
+    "ka": 1.1543427581996313,
+    "ke": 0.16817476536795226
+  },
+  "ref_dose_mg": 500.0,
+  "window_mg_L": [
+    3.0,
+    12.0
+  ],
+  "window_note": "假想治疗窗，演示用设定",
+  "t_end_h": 72.0,
+  "dt_h": 0.05,
+  "recommended": {
+    "regimen": "R2",
+    "label": "250 mg q6h",
+    "rule": "满足治疗窗中 PTF 最小"
+  },
+  "n_in_window": 1
+}

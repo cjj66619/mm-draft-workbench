@@ -1,0 +1,16 @@
+{
+  "figure": "fig01_roadmap",
+  "human": {
+    "status": "reviewed",
+    "reviewer": "Devin",
+    "date": "2026-09-07",
+    "verdict": "draft-needs-redraw",
+    "notes": [
+      "PNG 逐块核对：数值与 RESULTS_REPORT 一致；缩写与箭头分组问题见 REDRAW_NOTES.md；交稿前必须人工重画。"
+    ]
+  },
+  "auto_pdf": {
+    "checked_at": "2026-09-07T04:22:43",
+    "findings": []
+  }
+}

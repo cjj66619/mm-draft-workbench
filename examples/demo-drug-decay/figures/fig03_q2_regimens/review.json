@@ -1,0 +1,21 @@
+{
+  "figure": "fig03_q2_regimens",
+  "human": {
+    "status": "reviewed",
+    "reviewer": "Devin",
+    "date": "2026-09-07",
+    "verdict": "accept-draft",
+    "notes": [
+      "四条曲线颜色与图例一一对应；治疗窗灰带清楚；柱状图峰/谷数值标注与 results/q2_regimens.csv 一致。",
+      "R3 峰值柱较高，但未越界。"
+    ]
+  },
+  "auto": {
+    "checked_at": "2026-09-07T04:22:39",
+    "findings": []
+  },
+  "auto_pdf": {
+    "checked_at": "2026-09-07T04:22:43",
+    "findings": []
+  }
+}

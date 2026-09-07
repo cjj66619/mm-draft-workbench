@@ -1,0 +1,35 @@
+{
+  "seed": 42,
+  "n_mc": 2000,
+  "deltas": [
+    -0.2,
+    -0.1,
+    0.1,
+    0.2
+  ],
+  "most_sensitive_param_css_min": "ke",
+  "elasticity_css_min_abs_mean": {
+    "A": 1.0,
+    "ka": 0.004154836111747369,
+    "ke": 2.804256502723154
+  },
+  "p_in_window": {
+    "R1": 0.0345,
+    "R2": 1.0,
+    "R3": 0.0,
+    "R4": 0.0
+  },
+  "recommended_regimen": "R2",
+  "recommended_p_in_window": 1.0,
+  "individual_all_in_window": {
+    "R1": false,
+    "R2": true,
+    "R3": false,
+    "R4": false
+  },
+  "cleaning_effect": {
+    "ke_rel_change": 0.46728910286886016,
+    "A_rel_change": 0.9851262204794389,
+    "rmse_ratio": 3.921172261608484
+  }
+}

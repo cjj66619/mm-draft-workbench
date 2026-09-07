@@ -1,0 +1,66 @@
+{
+  "figure": "fig02_q1_fit",
+  "layout": "folder",
+  "files": {
+    "pdf": "fig02_q1_fit.pdf",
+    "png": "fig02_q1_fit.png",
+    "svg": "fig02_q1_fit.svg"
+  },
+  "script": "make_figure.py",
+  "source": [
+    "results/q1_fitted.csv",
+    "results/q1_curve.csv",
+    "data/clean/pk_clean.csv"
+  ],
+  "data": [
+    {
+      "source": "results/q1_fitted.csv",
+      "snapshot": "q1_fitted.csv",
+      "columns": [
+        "subject",
+        "t",
+        "y",
+        "y_hat",
+        "resid"
+      ]
+    },
+    {
+      "source": "results/q1_curve.csv",
+      "snapshot": "q1_curve.csv",
+      "columns": [
+        "subject",
+        "t",
+        "c_hat",
+        "ci_low",
+        "ci_high"
+      ]
+    },
+    {
+      "source": "data/clean/pk_clean.csv",
+      "snapshot": "pk_clean.csv",
+      "columns": [
+        "subject",
+        "time_h",
+        "conc_raw",
+        "conc",
+        "log_resid",
+        "robust_z",
+        "flag",
+        "use_for_fit"
+      ]
+    }
+  ],
+  "params": {
+    "ci": 0.95,
+    "y_max_clip": 13.0,
+    "fit": "pooled + per-subject"
+  },
+  "fonts": {
+    "latin": "Liberation Sans",
+    "cjk": "WenQuanYi Micro Hei",
+    "pdf_fonttype": 42
+  },
+  "checks": [],
+  "layout_lint": [],
+  "generated_at": "2026-09-07T04:22:37"
+}

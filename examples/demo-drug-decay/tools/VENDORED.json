@@ -1,0 +1,30 @@
+{
+  "generated": "2026-09-07T03:55:29",
+  "workbench_commit": "2017b5a",
+  "files": {
+    "mm_plot_style.py": {
+      "from": ".agents/skills/3coding-visual/scripts/mm_plot_style.py",
+      "sha256_16": "a7b97ab0f0a7f7a1"
+    },
+    "fig_layout_lint.py": {
+      "from": ".agents/skills/3coding-visual/scripts/fig_layout_lint.py",
+      "sha256_16": "ac8c4fb9d8229045"
+    },
+    "check_figures.py": {
+      "from": ".agents/skills/3coding-visual/scripts/check_figures.py",
+      "sha256_16": "bffb5d89a43c2cf6"
+    },
+    "figure_index.py": {
+      "from": ".agents/skills/3coding-visual/scripts/figure_index.py",
+      "sha256_16": "e3390d072d99cf16"
+    },
+    "portability_check.py": {
+      "from": ".agents/skills/draft-kickoff/scripts/portability_check.py",
+      "sha256_16": "e54775b63384ebd3"
+    },
+    "fonts/wqy-microhei.ttc": {
+      "from": "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
+      "sha256_16": "2420e8078af796b1"
+    }
+  }
+}

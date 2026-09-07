@@ -1,0 +1,70 @@
+name: windows-smoke
+
+# 输出项目承诺“Windows 上只靠 Python 就能重跑”，这里用示例项目 examples/demo-drug-decay 在 windows-latest 上实测：
+# doctor → run_all --strict（数据处理 / 模型 / 绘图 / 图检 / 可移植性）→ portability_check，
+# 再跑仓库级 smoke_test（新建骨架 → run_all；Windows runner 无 pandoc，Word 步骤自动跳过）。
+# Word 初稿只在 Devin/Linux 侧生成并冻结，不在此工作流内重生成。
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  demo:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: examples/demo-drug-decay/requirements.txt
+
+      - name: Install dependencies
+        working-directory: examples/demo-drug-decay
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: doctor
+        working-directory: examples/demo-drug-decay
+        run: python doctor.py
+
+      - name: run_all --strict
+        working-directory: examples/demo-drug-decay
+        run: python run_all.py --strict
+
+      - name: figure index check
+        working-directory: examples/demo-drug-decay
+        run: python tools/figure_index.py --check
+
+      - name: portability check
+        working-directory: examples/demo-drug-decay
+        run: python tools/portability_check.py .
+
+      - name: Word must be frozen (not regenerated here)
+        working-directory: examples/demo-drug-decay
+        run: |
+          python -c "import json,pathlib; r=json.loads(pathlib.Path('paper/DOCX_FREEZE.json').read_text(encoding='utf-8')); assert r.get('frozen') is True, r; assert pathlib.Path('paper/main.docx').is_file(); print('frozen OK')"
+
+      - name: repo smoke test (scaffold -> run_all; Word step skipped without pandoc)
+        run: python scripts/smoke_test.py
+
+      - name: Upload run status and figures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-drug-decay-windows
+          path: |
+            examples/demo-drug-decay/reports/RUN_STATUS.md
+            examples/demo-drug-decay/reports/_logs/
+            examples/demo-drug-decay/figures/FIGURE_REVIEW.md
+            examples/demo-drug-decay/figures/*/*.png
+          if-no-files-found: warn

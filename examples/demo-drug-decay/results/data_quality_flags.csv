@@ -1,0 +1,4 @@
+subject,time_h,conc_raw,robust_z,flag
+S01,3.0,24.0411,10.977,outlier
+S02,6.0,,,missing
+S03,24.0,-0.12,,negative

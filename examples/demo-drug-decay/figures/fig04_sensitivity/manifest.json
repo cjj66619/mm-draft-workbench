@@ -1,0 +1,63 @@
+{
+  "figure": "fig04_sensitivity",
+  "layout": "folder",
+  "files": {
+    "pdf": "fig04_sensitivity.pdf",
+    "png": "fig04_sensitivity.png",
+    "svg": "fig04_sensitivity.svg"
+  },
+  "script": "make_figure.py",
+  "source": [
+    "results/q3_sens_local.csv",
+    "results/q3_sens_mc.csv"
+  ],
+  "data": [
+    {
+      "source": "results/q3_sens_local.csv",
+      "snapshot": "q3_sens_local.csv",
+      "columns": [
+        "regimen",
+        "param",
+        "delta",
+        "css_max",
+        "css_min",
+        "frac_in_window",
+        "in_window",
+        "rel_change_css_min",
+        "elasticity_css_min",
+        "rel_change_css_max"
+      ]
+    },
+    {
+      "source": "results/q3_sens_mc.csv",
+      "snapshot": "q3_sens_mc.csv",
+      "columns": [
+        "regimen",
+        "metric",
+        "q025",
+        "q50",
+        "q975",
+        "mean"
+      ]
+    }
+  ],
+  "params": {
+    "target": "R2",
+    "deltas": [
+      0.1,
+      0.2
+    ],
+    "window_mg_L": [
+      3.0,
+      12.0
+    ]
+  },
+  "fonts": {
+    "latin": "Liberation Sans",
+    "cjk": "WenQuanYi Micro Hei",
+    "pdf_fonttype": 42
+  },
+  "checks": [],
+  "layout_lint": [],
+  "generated_at": "2026-09-07T04:22:41"
+}

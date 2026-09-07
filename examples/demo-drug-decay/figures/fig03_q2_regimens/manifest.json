@@ -1,0 +1,61 @@
+{
+  "figure": "fig03_q2_regimens",
+  "layout": "folder",
+  "files": {
+    "pdf": "fig03_q2_regimens.pdf",
+    "png": "fig03_q2_regimens.png",
+    "svg": "fig03_q2_regimens.svg"
+  },
+  "script": "make_figure.py",
+  "source": [
+    "results/q2_profiles.csv",
+    "results/q2_regimens.csv"
+  ],
+  "data": [
+    {
+      "source": "results/q2_profiles.csv",
+      "snapshot": "q2_profiles.csv",
+      "columns": [
+        "regimen",
+        "label",
+        "t",
+        "conc"
+      ]
+    },
+    {
+      "source": "results/q2_regimens.csv",
+      "snapshot": "q2_regimens.csv",
+      "columns": [
+        "regimen",
+        "label",
+        "dose_mg",
+        "tau_h",
+        "daily_dose_mg",
+        "css_max",
+        "css_min",
+        "css_avg",
+        "tmax_ss_h",
+        "ptf",
+        "accumulation",
+        "t90_h",
+        "frac_in_window",
+        "in_window"
+      ]
+    }
+  ],
+  "params": {
+    "window_mg_L": [
+      3.0,
+      12.0
+    ],
+    "t_end_h": 72
+  },
+  "fonts": {
+    "latin": "Liberation Sans",
+    "cjk": "WenQuanYi Micro Hei",
+    "pdf_fonttype": 42
+  },
+  "checks": [],
+  "layout_lint": [],
+  "generated_at": "2026-09-07T04:22:39"
+}

@@ -123,7 +123,40 @@ function Table(el)
 end
 
 -- 参考文献 / 附录 一级标题不编号（Typst 的 numbering: none 不会传给 pandoc）
+-- 作者手写的编号（“一、” / “5.2 ” / “5.2.1 ”）去掉，统一由 --number-sections 生成，避免“一、一、”
+local function strip_manual_number(inlines)
+  local first = inlines[1]
+  if first == nil or first.t ~= "Str" then
+    return inlines
+  end
+  local s = first.text
+  local rest
+  if s:match("^[一二三四五六七八九十]+、") then
+    rest = s:gsub("^[一二三四五六七八九十]+、", "", 1)
+  elseif s:match("^%d+%.%d+[%.%d]*$") then
+    rest = ""
+  elseif s:match("^%d+%.%d+[%.%d]*") then
+    rest = s:gsub("^%d+%.%d+[%.%d]*%s*", "", 1)
+  else
+    return inlines
+  end
+  local out = pandoc.List()
+  if rest ~= "" then
+    out:insert(pandoc.Str(rest))
+  end
+  local i = 2
+  if rest == "" and inlines[2] ~= nil and inlines[2].t == "Space" then
+    i = 3
+  end
+  while i <= #inlines do
+    out:insert(inlines[i])
+    i = i + 1
+  end
+  return out
+end
+
 function Header(el)
+  el.content = strip_manual_number(el.content)
   local txt = pandoc.utils.stringify(el)
   if el.level == 1 and (txt:match("^参考文献") or txt:match("^附录")) then
     el.classes:insert("unnumbered")
@@ -303,7 +336,7 @@ def extract_front_matter(paper: Path, meta: dict, abstract_file: Path | None) ->
         text = abstract_file.read_text(encoding="utf-8")
         text = re.sub(r"^---\n.*?\n---\n", "", text, flags=re.S)          # 去 YAML 头
         text = re.sub(r"^#+\s*摘\s*要[：:]?\s*$", "", text, flags=re.M)   # 去“# 摘要”标题
-        m = re.search(r"^\**关键词[：:]\**\s*(.+)$", text, flags=re.M)
+        m = re.search(r"^\**关键词\**[：:]\**\s*(.+)$", text, flags=re.M)
         if m and not fm.keywords:
             fm.keywords = [k.strip() for k in re.split(r"[;；,，]|\u3000+|\s{2,}", m.group(1)) if k.strip()]
         if m:
@@ -500,6 +533,7 @@ _ORDER: dict[str, list[str]] = {
     "w:p": ["pPr"],
     "w:tc": ["tcPr"],
     "w:tbl": ["tblPr", "tblGrid", "tr"],
+    "w:tr": ["tblPrEx", "trPr", "tc"],
     "w:rPrDefault": ["rPr"],
 }
 
@@ -1114,8 +1148,65 @@ def number_equations(body) -> int:
     return n
 
 
+_M_T = "{http://schemas.openxmlformats.org/officeDocument/2006/math}t"
+_CELL_PAD = 240        # 单元格左右内边距合计，twips
+_CELL_MIN_W = 700
+
+
+def _cell_width_twips(tc) -> int:
+    """按内容估算单元格不换行所需宽度：12 pt 下全角字 240 twips，半角字 120；多段取最宽。"""
+    best = 0
+    for p in tc.findall(qn("w:p")):
+        w = 0
+        for t in p.iter():
+            if t.tag in (qn("w:t"), _M_T) and t.text:
+                w += sum(240 if ord(ch) > 0x2E7F else 120 for ch in t.text)
+        best = max(best, w)
+    return best + _CELL_PAD
+
+
+def _fit_columns(tbl, tblpr) -> None:
+    """pandoc 对管道表只会写等宽 tblGrid，窄列满行、宽列空荡；这里按内容重算列宽，总宽不超版心。"""
+    rows = tbl.findall(qn("w:tr"))
+    ncol = max((len(r.findall(qn("w:tc"))) for r in rows), default=0)
+    if ncol == 0 or any(tc.find(f"{qn('w:tcPr')}/{qn('w:gridSpan')}") is not None
+                        for r in rows for tc in r.findall(qn("w:tc"))):
+        return
+    need = [_CELL_MIN_W] * ncol
+    for r in rows:
+        for i, tc in enumerate(r.findall(qn("w:tc"))):
+            need[i] = max(need[i], _cell_width_twips(tc))
+    total = sum(need)
+    if total > TEXT_W:
+        # 超宽时只压缩“可换行”的宽列：窄列保持不换行
+        narrow = [w for w in need if w <= 1400]
+        fixed = sum(narrow)
+        wide_total = total - fixed
+        scale = max((TEXT_W - fixed) / wide_total, 0.35) if wide_total else 1.0
+        need = [w if w <= 1400 else int(w * scale) for w in need]
+        total = sum(need)
+        if total > TEXT_W:
+            k = TEXT_W / total
+            need = [int(w * k) for w in need]
+    _child(tblpr, "w:tblW", w=sum(need), type="dxa")
+    _child(tblpr, "w:tblLayout", type="fixed")
+    grid = tbl.find(qn("w:tblGrid"))
+    if grid is None:
+        grid = OxmlElement("w:tblGrid")
+        _insert_ordered(tbl, grid)
+    for gc in list(grid):
+        grid.remove(gc)
+    for w in need:
+        gc = OxmlElement("w:gridCol")
+        gc.set(qn("w:w"), str(w))
+        grid.append(gc)
+    for r in rows:
+        for i, tc in enumerate(r.findall(qn("w:tc"))):
+            _child(_child(tc, "w:tcPr"), "w:tcW", w=need[i], type="dxa")
+
+
 def style_tables(body) -> int:
-    """普通表 → 三线表：居中，顶线/底线 1.5 pt，表头下线 0.5 pt，表头加粗，单元格 12 pt 固定行距 18 pt。"""
+    """普通表 → 三线表：居中，顶线/底线 1.5 pt，表头下线 0.5 pt，表头加粗，单元格 12 pt 固定行距 18 pt，列宽按内容。"""
     n = 0
     for tbl in body.iter(qn("w:tbl")):
         tblpr = tbl.find(qn("w:tblPr"))
@@ -1124,6 +1215,7 @@ def style_tables(body) -> int:
         if tbl.getparent().tag == qn("w:tc"):
             continue  # 嵌套表
         n += 1
+        _fit_columns(tbl, tblpr)
         _child(tblpr, "w:jc", val="center")
         _clear(tblpr, "w:tblBorders")
         bd = _child(tblpr, "w:tblBorders")
@@ -1139,8 +1231,10 @@ def style_tables(body) -> int:
             continue
         header_rows = [r for r in rows if r.find(f"{qn('w:trPr')}/{qn('w:tblHeader')}") is not None] or rows[:1]
         last_header = header_rows[-1]
+        keep_together = len(rows) <= 12   # 短表不跨页；长表允许分页
         for tr in rows:
             is_header = tr in header_rows
+            _child(_child(tr, "w:trPr"), "w:cantSplit")
             for tc in tr.findall(qn("w:tc")):
                 tcpr = _child(tc, "w:tcPr")
                 if tr is last_header:
@@ -1153,7 +1247,8 @@ def style_tables(body) -> int:
                     jc_val = jc.get(qn("w:val")) if jc is not None else "center"
                     _clear(ppr, "w:ind", "w:spacing", "w:jc")
                     _set_pstyle(p, "TableText")
-                    _para_props(ppr, jc=jc_val, first_line_chars=0, before=0, after=0, line=360, line_rule="exact")
+                    _para_props(ppr, jc=jc_val, first_line_chars=0, before=0, after=0, line=360, line_rule="exact",
+                                keep_next=(keep_together and tr is not rows[-1]) or is_header)
                     if is_header:
                         for r in p.findall(qn("w:r")):
                             _set_bold(_child(r, "w:rPr"), True)

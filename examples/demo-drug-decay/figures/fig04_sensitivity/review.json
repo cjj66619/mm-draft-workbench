@@ -1,0 +1,21 @@
+{
+  "figure": "fig04_sensitivity",
+  "human": {
+    "status": "reviewed",
+    "reviewer": "Devin",
+    "date": "2026-09-07",
+    "verdict": "accept-draft",
+    "notes": [
+      "(a) 龙卷风图 ke 条最长，与表 6 一致；(b) 区间条与达标率标注与 results/q3_sens_mc.csv 一致。",
+      "字号一致，无重叠。"
+    ]
+  },
+  "auto": {
+    "checked_at": "2026-09-07T04:22:41",
+    "findings": []
+  },
+  "auto_pdf": {
+    "checked_at": "2026-09-07T04:22:43",
+    "findings": []
+  }
+}

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+reports/_logs/
+*.docx.bak-*
+~$*.docx
+.DS_Store
+Thumbs.db

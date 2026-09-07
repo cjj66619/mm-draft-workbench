@@ -35,5 +35,6 @@ draft-kickoff(生成骨架) → 2analysis-modeling → data-auditor-cleaner → 
 
 - `SKILL.md` frontmatter 只保留 `name` 与 `description`。
 - 改工具脚本（`3coding-visual/scripts/*.py`、`draft-kickoff/scripts/portability_check.py`）后，对已生成项目用 `new_draft_project.py <dir> --update-tools` 同步。
-- 自检：`python3 -m compileall -q .agents/skills`；`python3 .agents/skills/draft-kickoff/scripts/portability_check.py .agents/skills/3coding-visual/scripts .agents/skills/draft-kickoff`；新建临时项目跑 `python doctor.py && python run_all.py`。
+- 自检：`python3 -m compileall -q .agents/skills`；`python3 .agents/skills/draft-kickoff/scripts/portability_check.py .agents/skills/3coding-visual/scripts .agents/skills/draft-kickoff`；`python3 scripts/smoke_test.py`（新建临时项目 → doctor → run_all → 一节 Markdown → build_docx --strict --freeze，无 pandoc 时跳过 Word 步骤）。
+- 示例项目 `examples/demo-drug-decay/`（合成药动学数据，端到端跑通）：`python run_all.py --strict && python tools/portability_check.py .`；`.github/workflows/windows-smoke.yml` 在 windows-latest 上跑同一套命令 + smoke_test（首次推送后才有实测结果，之前不要写"Windows 已验证"）。
 - 第三方来源与许可见 `THIRD_PARTY_NOTICES.md`；`projects/` 默认被 `.gitignore` 忽略，不要提交比赛数据、队号、API Key。

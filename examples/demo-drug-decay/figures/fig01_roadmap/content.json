@@ -1,0 +1,73 @@
+{
+  "_comment": "fig01_roadmap 内容源：由 scibox-diagram/scripts/roadmap_5band.py 渲染成 fig01_roadmap.drawio。数值来自 reports/RESULTS_REPORT.md。",
+  "title": "口服药物血药浓度的一室模型参数估计与给药方案模拟（合成数据演示）",
+  "rails": [
+    {"chevron": "破题分析", "label": "问题重述"},
+    {"chevron": "数据假设", "label": "模型准备"},
+    {"chevron": "建模求解", "label": "核心方法"},
+    {"chevron": "求解结果", "label": "结果对比"},
+    {"chevron": "评价推广", "label": "结论展望"}
+  ],
+  "band1": {
+    "headline": "由 36 个采样点反推药动参数并设计方案",
+    "items": [
+      "问题一 · 参数估计",
+      "问题二 · 方案比较",
+      "问题三 · 灵敏度"
+    ]
+  },
+  "band2": {
+    "sources": ["浓度\n时间表", "给药\n剂量", "治疗窗\n设定"],
+    "prep": "清洗与标记",
+    "assumptions": "一室、一级吸收\n一级消除、线性\n个体仅参数不同",
+    "symbols": "符号与单位定义",
+    "left_vertical": "机理建模",
+    "content": "内容一：Bateman\n单剂量浓度函数\nC(t)=A(e^-ke·t\n−e^-ka·t) 三问共用",
+    "subframe": "模型三要素",
+    "dims": ["幅值 A", "吸收 ka", "消除 ke"],
+    "right_vertical": "指标定义",
+    "metrics": [
+      ["拟合\n口径", "RMSE、留一 RMSE"],
+      ["药动\n口径", "t1/2、Tmax、AUC"],
+      ["方案\n口径", "稳态峰谷、PTF"]
+    ],
+    "aggregator": "3 个子问题指标",
+    "datasource": "样本 N = 36 条\n有效 n = 33 条"
+  },
+  "band3": {
+    "top": "单剂量视角（一）",
+    "bottom": "多剂量视角（二）",
+    "left": ["非线性最小二乘", "delta 法置信带", "留一交叉验证"],
+    "left_vertical": "参数估计",
+    "content": "内容二：curve_fit 估计\n(A, ka, ke) → 叠加原理\n生成多次给药曲线 →\n稳态峰谷解析式",
+    "right_vertical": "方案评价",
+    "right": ["叠加原理 ①", "稳态解析 ②", "治疗窗判据 ③"]
+  },
+  "band4": {
+    "banner": "内容三：合并拟合参数与四种给药方案在同一治疗窗下的横向对比",
+    "left_vertical": "参数估计结果",
+    "left_arrow_labels": ["合并拟合", "个体拟合"],
+    "left_items": [
+      "ke = 0.168 /h",
+      "ka = 1.15 /h",
+      "t1/2 = 4.1 h",
+      "留一 RMSE 0.72"
+    ],
+    "middle": "同一参数\n同一治疗窗",
+    "right_vertical": "方案比较",
+    "right_arrow_labels": ["日 1000", "日 750"],
+    "right_items": ["R1 q12h", "R2 q6h", "R3 q24h", "R4 q12h"],
+    "right_spans": ["推荐 R2\n谷 4.3\n峰 7.8", "其余三种\n谷值低于\n3 mg/L"]
+  },
+  "band5": {
+    "left_items": ["局部扰动", "Monte Carlo", "个体复算", "清洗对比"],
+    "corner": "留一交叉\n验证",
+    "pill": "seed=42 固定复现",
+    "cycle": ["参数估计", "方案模拟", "灵敏度"],
+    "content": "内容四：ke 敏感\nR2 达标率 100%\n模型评价与改进\n推广到真实数据",
+    "hex": "改进\n方向",
+    "eval": "模型评价",
+    "metrics": ["机理清晰", "解析可算", "不确定性", "全程复现"],
+    "cases": ["真实临床", "二室/非线性"]
+  }
+}

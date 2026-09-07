@@ -1,0 +1,65 @@
+{
+  "raw_file": "pk_raw.csv",
+  "n_rows": 36,
+  "n_subjects": 3,
+  "n_timepoints": 12,
+  "same_time_grid": true,
+  "time_grid_h": [
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0,
+    4.0,
+    6.0,
+    8.0,
+    12.0,
+    16.0,
+    24.0
+  ],
+  "flag_counts": {
+    "ok": 33,
+    "outlier": 1,
+    "missing": 1,
+    "negative": 1
+  },
+  "usable_per_subject": {
+    "S01": 11,
+    "S02": 11,
+    "S03": 11
+  },
+  "mad": {
+    "threshold": 3.5,
+    "scale": 1.4826,
+    "center_log_resid": 0.04688,
+    "mad_log_resid": 0.04404
+  },
+  "conc_range_ok": [
+    0.3529,
+    10.3907
+  ],
+  "flagged_rows": [
+    {
+      "subject": "S01",
+      "time_h": 3.0,
+      "conc_raw": 24.0411,
+      "robust_z": 10.977,
+      "flag": "outlier"
+    },
+    {
+      "subject": "S02",
+      "time_h": 6.0,
+      "conc_raw": NaN,
+      "robust_z": NaN,
+      "flag": "missing"
+    },
+    {
+      "subject": "S03",
+      "time_h": 24.0,
+      "conc_raw": -0.12,
+      "robust_z": NaN,
+      "flag": "negative"
+    }
+  ]
+}
