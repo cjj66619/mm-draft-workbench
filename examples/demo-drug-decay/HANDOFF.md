@@ -29,7 +29,7 @@
 - 时间 / 平台：2026-09-07，Ubuntu 22.04 / Python 3.10.12（Devin 侧）
 - 命令：`python run_all.py --strict`；另在删除 `results/`、`data/clean/`、各图 PDF/PNG/SVG 与数据快照后的干净副本上重跑，12 步全 OK，`results/` 与原副本逐字节一致
 - 结果：`reports/RUN_STATUS.md` FAIL 0 / WARN 0；`python tools/portability_check.py .` FAIL 0
-- **Windows：尚未实测。** 仓库已加 `.github/workflows/windows-smoke.yml`（windows-latest 跑 doctor / run_all --strict / portability_check / smoke_test），推送后看结果；在此之前不要写"Windows 已验证"。
+- **Windows（GitHub Actions windows-latest，Python 3.11，2026-09-07）**：`doctor` / `run_all --strict` / `figure_index --check` / `portability_check` / 冻结检查全部通过（工作流 `windows-smoke`，run 34083900482）。同一工作流里仓库级 `scripts/smoke_test.py` 曾因 Windows 控制台 cp1252 打印中文报错，已修（与项目无关）。**未在本机 Windows + 真实 Word 环境实测**，接手时请先 `python doctor.py`。
 
 ## 已知问题 / 需要人工判断
 
@@ -41,10 +41,9 @@
 
 ## 下一步（按优先级）
 
-1. 推送后看 `windows-smoke` 工作流结果；若失败按日志修 `tools/` 或 `code/`，再更新本节的 Windows 状态。
-2. 在 draw.io 打开 `figures/fig01_roadmap/fig01_roadmap.drawio` 按 `REDRAW_NOTES.md` 重画，导出后替换 Word 图 1。
-3. Word 内排版精修：表 2–9 列宽、图题位置、目录刷新（F9）。
-4. 若要作为真实赛题模板使用：替换 `data/raw/`、`problem/`，重跑 `run_all.py`，比对 `RESULTS_REPORT.md` 差异后再改 Word。
+1. 在 draw.io 打开 `figures/fig01_roadmap/fig01_roadmap.drawio` 按 `REDRAW_NOTES.md` 重画，导出后替换 Word 图 1。
+2. Word 内排版精修：表 2–9 列宽、图题位置、目录刷新（F9）。
+3. 若要作为真实赛题模板使用：替换 `data/raw/`、`problem/`，重跑 `run_all.py`，比对 `RESULTS_REPORT.md` 差异后再改 Word。
 
 ## 给下一位的提醒
 

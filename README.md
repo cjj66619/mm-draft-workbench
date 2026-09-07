@@ -39,6 +39,14 @@ projects/             生成的项目（.gitignore 忽略）
 
 Devin 侧依赖：Python 科学栈、pandoc、python-docx、pymupdf、LibreOffice（可选）、draw.io（可选，见 mm-workbench `scripts/setup_env.sh`）。
 
+## 示例项目
+
+`examples/demo-drug-decay/`：用合成药动学数据（口服一室 Bateman 模型：参数估计、给药方案模拟、灵敏度分析）端到端跑通的完整初稿项目，
+含 4 个 `code/` 脚本、3 张数据图 + 1 张 drawio 技术路线图草稿、4 份 `reports/`、已冻结的 `paper/main.docx` 与写实的 `HANDOFF.md`。
+可作为真实赛题项目的参照：`cd examples/demo-drug-decay && python doctor.py && python run_all.py --strict && python tools/portability_check.py .`。
+
 ## 状态
 
-脚手架与工具链已完成并 smoke 测试（Linux）。尚未完成：端到端演示项目、Windows 真机/CI 验证——见 `docs/NEXT_SESSION.md`。
+- 脚手架、工具链、`docx-build`、示例项目均已完成；Linux 上 `run_all --strict` 12 步 0 FAIL 0 WARN，`portability_check` 0 FAIL。
+- `.github/workflows/windows-smoke.yml` 在 windows-latest 上对示例项目跑 doctor → run_all --strict → figure_index --check → portability_check → 冻结检查，再跑仓库级 `scripts/smoke_test.py`（无 pandoc 时跳过 Word 步骤）；Windows 实测结果以该工作流为准。
+- 仓库自检命令见 `AGENTS.md`「仓库维护」节。

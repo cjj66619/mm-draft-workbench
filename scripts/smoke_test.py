@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -57,9 +58,17 @@ EXPECTED_FILES = (
 )
 
 
+def _env() -> dict[str, str]:
+    env = dict(os.environ)
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONIOENCODING"] = "utf-8"
+    return env
+
+
 def run(cmd: list[str], cwd: Path, label: str) -> None:
     print(f"\n[smoke] {label}\n  $ {' '.join(Path(c).name if Path(c).is_absolute() else c for c in cmd)}", flush=True)
-    p = subprocess.run(cmd, cwd=str(cwd), text=True, encoding="utf-8", errors="replace", capture_output=True)
+    p = subprocess.run(cmd, cwd=str(cwd), env=_env(), text=True, encoding="utf-8", errors="replace",
+                       capture_output=True)
     tail = (p.stdout + p.stderr)[-3000:]
     if p.returncode != 0:
         print(tail)
@@ -73,6 +82,10 @@ def main() -> None:
     ap.add_argument("--require-docx", action="store_true", help="缺 pandoc 时视为失败")
     ap.add_argument("--dest", type=Path, default=None, help="临时项目位置（默认系统临时目录）")
     args = ap.parse_args()
+
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
     py = sys.executable
     tmp_root = args.dest or Path(tempfile.mkdtemp(prefix="mm-smoke-"))
