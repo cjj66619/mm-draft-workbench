@@ -7,8 +7,8 @@
 核心项（必须）：Python ≥ 3.10、numpy、pandas、matplotlib、scipy、可写的 results/ figures/ reports/、
 中文 TrueType 字体（tools/fonts/ 随项目自带，或系统 SimHei/微软雅黑）。
 可选项（缺了只影响对应功能）：pymupdf（PDF 图版式检查/转 PNG）、openpyxl（读 Excel 附件）、
-scikit-learn、PyYAML、draw.io 桌面版（重新导出示意图，平时只需编辑 .drawio）。
-Word 初稿不在本机重生成，因此不检查 pandoc / LibreOffice。
+scikit-learn、PyYAML（读 paper.yaml / project.yaml；缺了用内置最小解析）、draw.io 桌面版（重新导出示意图，平时只需编辑 .drawio）。
+论文正文是 paper/sections/*.md，任何文本编辑器可读写，不需要额外软件。
 """
 from __future__ import annotations
 

@@ -59,6 +59,6 @@ If the user asks for changes, copy/run the nearest template first, then edit the
 - deterministic seeds for simulated data.
 - readable labels, legends, and high-DPI output.
 
-For a Chinese-language paper switch `apply_style(lang="zh")` and translate in-figure text; the module picks a TrueType CJK font so the PDF survives the DOCX conversion.
+For a Chinese-language paper switch `apply_style(lang="zh")` and translate in-figure text; the module picks a TrueType CJK font so the PDF survives PDF→PNG rendering.
 
 Use `references/plot-recipes.md` for implementation patterns.

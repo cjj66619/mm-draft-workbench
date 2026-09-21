@@ -7,7 +7,7 @@
 
 ```text
 python doctor.py          # 1. 体检：缺什么包会直接告诉你 pip install 什么
-python run_all.py         # 2. 复现：code/ → figures/ → 图自检 → 可移植性检查
+python run_all.py         # 2. 复现：code/ → figures/ → 图自检 → 论文章节自检 → 可移植性检查
 ```
 
 Windows 可直接双击 `run_all.bat`（等价于第 2 步）。运行结果见 `reports/RUN_STATUS.md`，详细日志在 `reports/_logs/`。
@@ -16,7 +16,7 @@ Windows 可直接双击 `run_all.bat`（等价于第 2 步）。运行结果见 
 
 | 想要 | 位置 | 说明 |
 | --- | --- | --- |
-| Word 初稿 | `paper/main.docx` | **唯一真源**，直接用 Word 编辑。`paper/sections/*.md` 是生成它的历史源，冻结后不再重生成（见 `paper/README.md`） |
+| 论文正文 | `paper/sections/*.md` + `paper/paper.yaml` | **一章一文件**，这就是论文终稿；题目/关键词/章节顺序在 `paper.yaml`（见 `paper/README.md`）。自检报告 `reports/PAPER_CHECK.md` |
 | 建模思路 | `reports/ANALYSIS_MODELING_REPORT.md` | 问题拆解、假设、符号、模型公式、求解策略、决策记录 |
 | 数据说明 | `reports/DATA_REPORT.md` | 原始附件清单、清洗步骤、质量问题 |
 | 结果数值 | `reports/RESULTS_REPORT.md` + `results/` | 论文中所有数字的唯一来源 |
@@ -37,19 +37,19 @@ Windows 可直接双击 `run_all.bat`（等价于第 2 步）。运行结果见 
 ├── data/raw/         原始数据（只读，不要改）      data/clean/  清洗结果
 ├── code/             00_数据处理  10_/20_模型  90_汇总  common.py(路径/种子/保存工具)
 ├── results/          模型输出（csv/json）
-├── reports/          建模报告、数据报告、结果报告、运行状态
+├── reports/          建模报告、数据报告、结果报告、运行状态、论文章节自检
 ├── figures/          一图一文件夹（见上）
-├── paper/            main.docx（冻结）  sections/*.md（历史源）  DOCX_FREEZE.json
+├── paper/            paper.yaml（题目/关键词/章节顺序）  sections/*.md（论文正文，一章一文件）
 └── tools/            随项目交付的绘图/检查脚本与字体（不依赖仓库，Windows 可用）
 ```
 
 ## 修改与优化怎么做
 
-- **改模型/参数**：改 `code/` → `python run_all.py code figures` → 数值进 `results/` 与 `reports/RESULTS_REPORT.md` → 手工同步到 Word（Word 是真源，数字以报告为准）。
-- **改一张图**：改 `figures/<fig_id>/make_figure.py` → `python run_all.py figures <fig_id>` → 看 `figures/<fig_id>/review.json` 的自检 → 把新 PNG 插回 Word。
+- **改模型/参数**：改 `code/` → `python run_all.py code figures` → 数值进 `results/` 与 `reports/RESULTS_REPORT.md` → 再改 `paper/sections/*.md` 里对应的数字（数字以报告为准，不允许只改正文）。
+- **改一张图**：改 `figures/<fig_id>/make_figure.py` → `python run_all.py figures <fig_id>` → 看 `figures/<fig_id>/review.json` 的自检与 PNG。正文引的是同文件夹的 PDF，不用改正文。
 - **绘图优化**：看 `figures/FIGURE_REVIEW.md`，逐条清零 `text_overlap` / `legend_over_data` / `font_size_spread` / `color_off_palette` 等发现；自检不能替代肉眼，务必打开 PNG 看。
-- **补实验**：新增 `code/3x_*.py` 与 `figures/figNN_xxx/`，在 `reports/RESULTS_REPORT.md` 记录数值来源，再改 Word。
-- **文字润色 / 格式调整**：直接在 Word 里做；不要再跑 Markdown→Word。
+- **补实验**：新增 `code/3x_*.py` 与 `figures/figNN_xxx/`，在 `reports/RESULTS_REPORT.md` 记录数值来源，再在对应章节 `.md` 里写入。
+- **改文字**：直接改 `paper/sections/*.md` → `python run_all.py paper`，`reports/PAPER_CHECK.md` 里 FAIL 清零。图/表/公式不手写编号，用 `@fig:x` / `@tbl:x` / `@eq:x`。
 
 ## 依赖
 
@@ -60,4 +60,4 @@ Windows 可直接双击 `run_all.bat`（等价于第 2 步）。运行结果见 
 
 - 示意图（技术路线图、流程图、模型结构图）由程序排版，只保证"结构正确"，不保证论文级美观；请在 draw.io 里按 `REDRAW_NOTES.md` 重画。
 - 数据图的自动版式检查（重叠/越界/字号/配色）覆盖常见问题，但不能替代人工审图。
-- Word 初稿的格式（字体、行距、图表编号）按通用中文论文格式生成，投稿/参赛模板细节需在 Word 中调整。
+- 论文章节自检（`tools/paper_check.py`）只查结构与引用（交叉引用、图路径、占位符、内部名泄露），数值与 `reports/RESULTS_REPORT.md` 的一致性需人工核对。

@@ -19,7 +19,7 @@
 | 数据图 | 未开始 | `figures/figNN_*/` | `figures/FIGURE_REVIEW.md` 中 FAIL/WARN 数： |
 | 示意图（drawio） | 未开始 | `figures/figNN_*/*.drawio` + PNG/PDF + `REDRAW_NOTES.md` | 全部为草稿，需人工重画 |
 | 稳健性 / 敏感性 | 未开始 | `reports/ROBUSTNESS_REPORT.md` | |
-| Word 初稿 | 未开始 | `paper/main.docx` | 冻结状态见 `paper/DOCX_FREEZE.json` |
+| 论文正文 | 未开始 | `paper/sections/*.md`, `paper/paper.yaml` | `reports/PAPER_CHECK.md` 中 FAIL/WARN 数： |
 | 一致性与质量审计 | 未开始 | `reports/AUDIT_*.md` | |
 
 状态取值：未开始 / 进行中 / 已完成 / 已完成-有已知问题。
@@ -28,7 +28,7 @@
 
 - 时间 / 平台：
 - 命令：`python run_all.py`
-- 结果：`reports/RUN_STATUS.md`（FAIL 0 才算通过）
+- 结果：`reports/RUN_STATUS.md`（FAIL 0 才算通过；包含 `paper` 阶段的章节自检）
 
 ## 已知问题 / 需要人工判断
 
@@ -44,6 +44,6 @@
 
 ## 给下一位的提醒
 
-- Word 是正文唯一真源；数字改动必须先改代码/结果报告，再改 Word。
+- 正文只有 `paper/sections/*.md` 一份；数字改动必须先改代码/结果报告，再改正文，改完跑 `python run_all.py paper`。
 - `data/raw/` 别动；`figures/*/manifest.json`、`review.json`、`figures/README.md` 等是自动生成的，别手改。
 - 跑不起来先 `python doctor.py`。

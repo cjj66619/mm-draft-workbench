@@ -15,7 +15,7 @@ description: "数学建模编程实现与数据图表生成阶段。根据 ANALY
 
 - 本阶段负责：代码、实验运行、结果、结果表、数据驱动图表。
 - 本阶段不负责：技术路线图、算法流程图、系统架构图、概念示意图。这些交给 `4drawio`。
-- 本阶段不写论文正文，只为 `5writing` 提供可信数值和图表资产。
+- 本阶段不写论文正文，只为 `draft-writing` 提供可信数值和图表资产。
 
 
 ### Step 1: 代码结构
@@ -82,7 +82,7 @@ ax.plot(x, y, color=COLORS[0], label="预测值")
 save_fig(fig, "figures/fig_q1_fit", source="results/q1_fit.csv", params={"seed": 0})
 ```
 
-`apply_style` 自动选择当前系统上 Matplotlib 能识别且轮廓为 TrueType 的中文字体（Linux 上通常是 WenQuanYi Micro Hei / AR PL UMing），并配合 `pdf.fonttype=42` 导出；这是修复“中文图经 DOCX 转 PNG 后乱码”的根因方案，不要用 `pdf.fonttype=3` 或直接写死 `Noto Sans CJK SC` 绕过。`save_fig` 默认输出 PDF + PNG，自动运行 PDF 字体自检，并把脚本、数据来源、参数、字体写入 `figures/_manifest.json`，作为图表的生成记录。
+`apply_style` 自动选择当前系统上 Matplotlib 能识别且轮廓为 TrueType 的中文字体（Linux 上通常是 WenQuanYi Micro Hei / AR PL UMing），并配合 `pdf.fonttype=42` 导出；这是修复“中文图经 PDF→PNG 渲染后乱码”的根因方案，不要用 `pdf.fonttype=3` 或直接写死 `Noto Sans CJK SC` 绕过。`save_fig` 默认输出 PDF + PNG，自动运行 PDF 字体自检，并把脚本、数据来源、参数、字体写入 `figures/_manifest.json`，作为图表的生成记录。
 
 **4.2 图表内容要求**
 
@@ -95,7 +95,7 @@ save_fig(fig, "figures/fig_q1_fit", source="results/q1_fit.csv", params={"seed":
 
 图表要求：
 
-- 每张图只回答一个问题；图内文字与论文语言一致（中文论文中文坐标轴/图例），不在图内写大标题，标题交给论文 caption（Typst 的 `caption:` 或 LaTeX 的 `\caption{}`）。
+- 每张图只回答一个问题；图内文字与论文语言一致（中文论文中文坐标轴/图例），不在图内写大标题，标题交给正文图题（`![图题](...){#fig:<id>}`）。
 - 只用 `COLORS` / `PALETTES` 与 `SEQUENTIAL_CMAP`、`DIVERGING_CMAP`，不用 jet/rainbow；同类图配色与线型保持一致。
 - 图宽取 `figsize("full"|"half"|...)`，不要超过 16 cm 版心；基准字号 9 pt，任何文字不小于 5 pt。
 - 多面板用 `label_panels(axes)` 加 (a)(b)(c)，面板对齐。
@@ -107,6 +107,6 @@ save_fig(fig, "figures/fig_q1_fit", source="results/q1_fit.csv", params={"seed":
 python3 ../../.agents/skills/3coding-visual/scripts/check_figures.py --expect-cjk figures/   # 英文论文去掉 --expect-cjk
 ```
 
-任何 `FAIL`（字体未嵌入、CFF 轮廓按 TrueType 嵌入、中文提取不到、缺字）必须修好再进入 `5writing`。`check_figures.py` 依赖同目录的 `mm_plot_style.py`，原地运行即可。
+任何 `FAIL`（字体未嵌入、CFF 轮廓按 TrueType 嵌入、中文提取不到、缺字）必须修好再进入 `draft-writing`。`check_figures.py` 依赖同目录的 `mm_plot_style.py`，原地运行即可。
 
 图表可以由主程序或独立脚本生成，不强制固定脚本名。无论采用哪种方式，`figures/_manifest.json` 必须能对应到每张图的数据来源与生成脚本，并在 `reports/RESULTS_REPORT.md` 中引用。

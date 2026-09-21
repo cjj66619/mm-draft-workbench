@@ -5,10 +5,5 @@ __pycache__/
 *.pyc
 .venv/
 *.part
-_docx_body.*
-_docx_shadow/
-docx_render/
-~$*.docx
-*.docx.bak-*
 .DS_Store
 Thumbs.db

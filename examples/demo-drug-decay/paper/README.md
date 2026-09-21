@@ -1,15 +1,25 @@
-# paper/ — Word 初稿
+# paper/ — 论文正文
 
 | 文件 | 角色 |
 | --- | --- |
-| `main.docx` | **正文唯一真源**。用 Word 打开直接编辑：润色、排版、编号、插图替换都在这里做 |
-| `main.pdf` | 生成时的渲染抽检（可能没有，仅供参考） |
-| `DOCX_FREEZE.json` | 冻结记录：生成时间、来源章节哈希、`frozen: true` 表示以后**不再**由 Markdown 重生成 |
-| `paper.yaml` | 生成时的题目 / 摘要 / 关键词 / 章节顺序（历史记录） |
-| `sections/*.md` | 生成 `main.docx` 时用的 Markdown 章节（LaTeX 公式、`@fig:`/`@tbl:`/`@eq:` 交叉引用）。**历史源，不再维护**；想查某段最初怎么写的可以看 |
-| `docx_build_report.md` | 生成时的审计报告：段落/公式/图表数量、占位符与内部名称检查 |
+| `paper.yaml` | 题目 `title`、关键词 `keywords`、章节顺序 `sections`（为空时按 `sections/` 文件名排序） |
+| `sections/00_abstract.md` | 摘要。不写标题；最后一行 `**关键词：**a；b；c` |
+| `sections/NN_xxx.md` | 正文，**一章一个文件**，每个文件一个一级标题 `# 一、问题重述`。`_` 开头的文件被忽略 |
 
-规则：
-1. 改数字先改代码 → 重跑 → `reports/RESULTS_REPORT.md` → 再改 Word。
-2. 图改了之后，把 `figures/<fig_id>/<fig_id>.png` 重新插入 Word（右键图片 → 更改图片）。
-3. 不要在本机重新生成 docx 覆盖 `main.docx`；确有需要（例如重来一版）请先把现有 `main.docx` 另存为 `main_v1_手工.docx`。
+正文就是这些 Markdown 文件，没有别的副本。写法约定（`python run_all.py paper` 会检查）：
+
+| 元素 | 写法 | 正文引用 |
+| --- | --- | --- |
+| 公式 | `$$ ... $$ {#eq:q1_model}`（行内 `$...$`） | `@eq:q1_model` → 式(1) |
+| 图 | `![图题](../../figures/fig02_q1_fit/fig02_q1_fit.pdf){#fig:q1_fit}` | `@fig:q1_fit` → 图1 |
+| 表 | Markdown 管道表，紧邻的上一行或下一行写 `Table: 表题 {#tbl:q1_params}` | `@tbl:q1_params` → 表1 |
+
+- 图/表/公式**不手写编号**，也不要在 `@fig:x` 前再写“图”（会变成“图 图1”）。
+- 图片一律引用 `figures/<fig_id>/<fig_id>.pdf`（重画后路径不变，正文不用改）。
+- 所有数字来自 `reports/RESULTS_REPORT.md`；改数字先改代码 → 重跑 → 更新报告 → 再改这里。
+- 正文中不得出现 `reports/`、`figures/`、`results/`、`AGENTS.md`、`run_all` 等内部名称，不得有 `[TODO]`、`[待补充]`、未替换的模板变量等占位符。
+- 自检：`python run_all.py paper`（或 `python tools/paper_check.py --strict`），结果在 `reports/PAPER_CHECK.md`，FAIL 必须清零。
+
+推荐章节文件：`00_abstract.md`、`01_restatement.md`（问题重述）、`02_analysis.md`（问题分析）、`03_assumptions.md`（模型假设）、
+`04_symbols.md`（符号说明）、`05_problem1.md` … `0N_problemN.md`（各问建模与求解）、`08_sensitivity.md`（灵敏度/稳健性）、
+`09_evaluation.md`（模型评价与推广）、`10_references.md`（参考文献）。

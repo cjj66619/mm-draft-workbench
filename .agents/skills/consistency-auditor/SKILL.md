@@ -58,7 +58,7 @@ Use legacy decision logs or Markdown reviews only during migration.
 
 # Rules
 
-- Do not run a full audit for formatting, comments, scratch work, or ordinary pre-freeze exploration.
+- Do not run a full audit for formatting, comments, scratch work, or ordinary exploration before results are finalized.
 - Do not infer canonical numbers from the paper.
 - Do not repair divergences inside the audit.
 - Do not approve final assembly directly.

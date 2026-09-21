@@ -1,5 +1,5 @@
 title: "{{TITLE}}"
 lang: zh
 keywords: []
-# sections 为空时按 paper/sections/ 文件名排序；00_abstract.md 作为摘要
+# 正文 = paper/sections/*.md（一章一文件）。sections 为空时按文件名排序；00_abstract.md 作为摘要
 sections: []

@@ -1,10 +1,10 @@
 {
-  "generated": "2026-09-07T03:55:29",
-  "workbench_commit": "2017b5a",
+  "generated": "2026-09-21T08:33:07",
+  "workbench_commit": "90749cb",
   "files": {
     "mm_plot_style.py": {
       "from": ".agents/skills/3coding-visual/scripts/mm_plot_style.py",
-      "sha256_16": "a7b97ab0f0a7f7a1"
+      "sha256_16": "814923999dd53e7c"
     },
     "fig_layout_lint.py": {
       "from": ".agents/skills/3coding-visual/scripts/fig_layout_lint.py",
@@ -18,12 +18,16 @@
       "from": ".agents/skills/3coding-visual/scripts/figure_index.py",
       "sha256_16": "e3390d072d99cf16"
     },
+    "paper_check.py": {
+      "from": ".agents/skills/draft-kickoff/scripts/paper_check.py",
+      "sha256_16": "7273091f35f68941"
+    },
     "portability_check.py": {
       "from": ".agents/skills/draft-kickoff/scripts/portability_check.py",
       "sha256_16": "e54775b63384ebd3"
     },
     "fonts/wqy-microhei.ttc": {
-      "from": "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
+      "from": "(已随项目分发，本次未更新)",
       "sha256_16": "2420e8078af796b1"
     }
   }

@@ -1,6 +1,6 @@
 # RESULTS_REPORT — 求解结果（论文数值唯一来源）
 
-> 每个数字都标注来源文件；论文正文与图上的数值只能抄自本文件。重跑 `python run_all.py code` 后若数值变化，先更新本文件再改 Word。
+> 每个数字都标注来源文件；论文正文与图上的数值只能抄自本文件。重跑 `python run_all.py code` 后若数值变化，先更新本文件再改 `paper/sections/*.md`。
 > 模型与公式编号见 `ANALYSIS_MODELING_REPORT.md`。数据为合成，治疗窗 3–12 mg/L 为假想设定。
 > 生成环境：Linux / Python 3.10.12；最近一次运行见 `RUN_STATUS.md`。
 

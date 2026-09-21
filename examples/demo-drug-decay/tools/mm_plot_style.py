@@ -2,7 +2,7 @@
 
 规范来源：nature-skills/nature-figure 的 Python 后端约定（sans-serif、7–9 pt、
 细坐标轴、无图例边框、svg.fonttype=none、pdf.fonttype=42）+ 华为杯中文论文与
-DOCX 交稿链路的字体约束。详细说明见 `_references/figure_style.md`。
+PDF→PNG 渲染链路的字体约束。详细说明见 `_references/figure_style.md`。
 
 用法（项目里本文件位于 `tools/`，每张图的 `figures/<fig_id>/make_figure.py` 这样写）::
 
@@ -368,7 +368,7 @@ def check_pdf(pdf: str | os.PathLike, *, expect_cjk: bool | None = None, strict:
         if ext2 in ("ttf", "ttc") and buf[:4] == b"OTTO":
             out.append(("FAIL", f"字体 {basefont} 为 CFF 轮廓却按 TrueType 嵌入（Noto CJK OTF + fonttype=42），PDF→PNG 会乱码"))
 
-    # 实际渲染一次（与 docx-export 的 PDF→PNG 同一路径），捕获 MuPDF 的字形加载失败
+    # 实际渲染一次（PDF→PNG 路径），捕获 MuPDF 的字形加载失败
     try:
         pymupdf.TOOLS.mupdf_warnings(reset=True)
         page.get_pixmap(dpi=72)
@@ -376,7 +376,7 @@ def check_pdf(pdf: str | os.PathLike, *, expect_cjk: bool | None = None, strict:
     except Exception:  # noqa: BLE001
         render_warn = ""
     if "cannot render glyph" in render_warn or "FT_Load_Glyph" in render_warn:
-        out.append(("FAIL", "渲染时无法加载字形（嵌入字体损坏），PDF→PNG/Word 内会显示乱码或空白"))
+        out.append(("FAIL", "渲染时无法加载字形（嵌入字体损坏），PDF→PNG 后会显示乱码或空白"))
     elif render_warn.strip():
         out.append(("WARN", f"渲染警告: {render_warn.strip().splitlines()[0]}"))
 
@@ -529,7 +529,7 @@ def _write_figure_readme(folder: Path, stem: str, info: dict, docstring: str, re
     lines += ["## 文件", "", "| 文件 | 说明 |", "| --- | --- |"]
     lines.append(f"| `{FIGURE_SCRIPT_NAME}` | 绘图脚本，在项目根目录运行 `python figures/{folder.name}/{FIGURE_SCRIPT_NAME}` 重新生成 |")
     for ext, f in info["files"].items():
-        lines.append(f"| `{Path(f).name}` | {ext.upper()} 输出{'（论文/Word 用）' if ext == 'pdf' else '（预览）' if ext == 'png' else '（可编辑矢量）' if ext == 'svg' else ''} |")
+        lines.append(f"| `{Path(f).name}` | {ext.upper()} 输出{'（论文引用）' if ext == 'pdf' else '（预览）' if ext == 'png' else '（可编辑矢量）' if ext == 'svg' else ''} |")
     for s in info["data"]:
         cols = ", ".join(s.get("columns", []))
         lines.append(f"| `{s['snapshot']}` | 数据快照，来源 `{s['source']}`{'；列：' + cols if cols else ''} |")

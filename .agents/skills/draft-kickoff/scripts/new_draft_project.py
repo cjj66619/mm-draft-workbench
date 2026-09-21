@@ -7,7 +7,7 @@
 
 做的事：
 1. 复制 scaffold/ 到目标目录（已存在的文件默认不覆盖，--force 覆盖模板类文件）；
-2. 把 skills 里的纯 Python 工具拷进 <项目>/tools/（mm_plot_style、fig_layout_lint、check_figures、figure_index、portability_check）；
+2. 把 skills 里的纯 Python 工具拷进 <项目>/tools/（mm_plot_style、fig_layout_lint、check_figures、figure_index、paper_check、portability_check）；
 3. 把中文 TrueType 字体拷进 <项目>/tools/fonts/（默认找系统 wqy-microhei.ttc；--font 指定），附许可说明；
 4. 替换 {{TITLE}} {{CONTEST}} {{DATE}} {{PROJECT}} {{GEN_PLATFORM}} {{GEN_VERSION}} 占位符；
 5. 写 tools/VENDORED.json 记录来源与哈希，便于以后 --update-tools 升级；
@@ -38,6 +38,7 @@ TOOL_SOURCES = {
     "fig_layout_lint.py": SKILLS / "3coding-visual" / "scripts" / "fig_layout_lint.py",
     "check_figures.py": SKILLS / "3coding-visual" / "scripts" / "check_figures.py",
     "figure_index.py": SKILLS / "3coding-visual" / "scripts" / "figure_index.py",
+    "paper_check.py": HERE / "paper_check.py",
     "portability_check.py": HERE / "portability_check.py",
 }
 FONT_CANDIDATES = [
@@ -56,7 +57,7 @@ FONT_LICENSE = """# tools/fonts/ 字体许可
 `mm_plot_style.register_bundled_fonts()` 会在 apply_style 时自动注册本目录的 .ttf/.ttc/.otf，并优先于系统字体使用。
 """
 # 只有这些"模板文件"在 --force 时会被覆盖；用户内容目录（code/ figures/ paper/ reports/…）永不覆盖
-TEMPLATE_FILES = {"run_all.py", "run_all.bat", "doctor.py", "requirements.txt", "tools/README.md",
+TEMPLATE_FILES = {"run_all.py", "run_all.bat", "doctor.py", "requirements.txt", "tools/README.md", "paper/README.md",
                   "figures/_template_figure/make_figure.py", "figures/_template_figure/README.md",
                   "code/_template_model.py", "code/common.py", "code/README.md"}
 PLACEHOLDER_EXTS = {".md", ".yaml", ".yml", ".txt", ".json"}
@@ -105,10 +106,14 @@ def vendor_tools(dst: Path, font: Path | None) -> dict:
     fonts = tools / "fonts"
     fonts.mkdir(exist_ok=True)
     chosen = font if font else next((c for c in FONT_CANDIDATES if c.exists()), None)
+    existing = sorted(p for p in fonts.iterdir() if p.suffix.lower() in (".ttf", ".ttc", ".otf"))
     if chosen and chosen.exists():
         shutil.copy2(chosen, fonts / chosen.name)
         (fonts / "LICENSE.md").write_text(FONT_LICENSE, encoding="utf-8")
-        record["files"][f"fonts/{chosen.name}"] = {"from": str(chosen), "sha256_16": sha256(chosen)}
+        record["files"][f"fonts/{chosen.name}"] = {"from": f"(生成机系统字体 {chosen.name})", "sha256_16": sha256(chosen)}
+    elif existing:
+        for p in existing:
+            record["files"][f"fonts/{p.name}"] = {"from": "(已随项目分发，本次未更新)", "sha256_16": sha256(p)}
     else:
         print("[warn] 未找到 wqy-microhei.ttc，tools/fonts/ 为空；Windows 将回退到系统 SimHei/微软雅黑（字形与生成时可能不同）")
     (tools / "VENDORED.json").write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -176,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.git:
         git_init(dst)
         print("git: 已初始化并提交")
-    print("\n下一步：\n  cd", dst, "\n  python doctor.py\n  然后按 .agents/skills/draft-kickoff/SKILL.md 推进六阶段。")
+    print("\n下一步：\n  cd", dst, "\n  python doctor.py\n  然后按 .agents/skills/draft-kickoff/SKILL.md 推进各阶段，论文正文写到 paper/sections/*.md。")
     return 0
 
 

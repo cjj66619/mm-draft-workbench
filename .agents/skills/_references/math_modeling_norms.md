@@ -11,9 +11,9 @@
 | [题型防错速查](#题型防错速查) | `2analysis-modeling` `3coding-visual` |
 | [代码实现与结果](#代码实现与结果) | `3coding-visual` |
 | [编码阶段常见错误](#编码阶段常见错误) | `3coding-visual` |
-| [图表与可视化](#图表与可视化) | `3coding-visual` `4drawio` `5writing` |
-| [非数据图工具选择](#非数据图工具选择) | `4drawio` `5writing` |
-| [论文写作](#论文写作) | `5writing` |
+| [图表与可视化](#图表与可视化) | `3coding-visual` `4drawio` `draft-writing` |
+| [非数据图工具选择](#非数据图工具选择) | `4drawio` `draft-writing` |
+| [论文写作](#论文写作) | `draft-writing` |
 | [论文验收与一致性](#论文验收与一致性) | `6verity` |
 | [模型大分类与选型速查](#模型大分类与选型速查) | `2analysis-modeling` |
 | [评价类模型详细指南](#评价类模型详细指南) | `2analysis-modeling` `3coding-visual` |
@@ -22,8 +22,8 @@
 | [机理/动力学类模型详细指南](#机理动力学类模型详细指南) | `2analysis-modeling` `3coding-visual` |
 | [图论与网络类模型](#图论与网络类模型) | `2analysis-modeling` `3coding-visual` |
 | [统计分析与机器学习](#统计分析与机器学习) | `2analysis-modeling` `3coding-visual` |
-| [论文写作规范补充](#论文写作规范补充) | `5writing` |
-| [美赛（MCM/ICM）专项规范](#美赛mcmicm专项规范) | `5writing` |
+| [论文写作规范补充](#论文写作规范补充) | `draft-writing` |
+| [美赛（MCM/ICM）专项规范](#美赛mcmicm专项规范) | `draft-writing` |
 
 ---
 

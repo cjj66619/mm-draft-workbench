@@ -1,9 +1,8 @@
 name: windows-smoke
 
 # 输出项目承诺“Windows 上只靠 Python 就能重跑”，这里用示例项目 examples/demo-drug-decay 在 windows-latest 上实测：
-# doctor → run_all --strict（数据处理 / 模型 / 绘图 / 图检 / 可移植性）→ portability_check，
-# 再跑仓库级 smoke_test（新建骨架 → run_all；Windows runner 无 pandoc，Word 步骤自动跳过）。
-# Word 初稿只在 Devin/Linux 侧生成并冻结，不在此工作流内重生成。
+# doctor → run_all --strict（数据处理 / 模型 / 绘图 / 图检 / 论文章节自检 / 可移植性）→ paper_check → portability_check，
+# 再跑仓库级 smoke_test（新建骨架 → run_all → 最小 Markdown 章节 → paper_check）。
 
 on:
   push:
@@ -49,12 +48,11 @@ jobs:
         working-directory: examples/demo-drug-decay
         run: python tools/portability_check.py .
 
-      - name: Word must be frozen (not regenerated here)
+      - name: paper sections check (Markdown contract)
         working-directory: examples/demo-drug-decay
-        run: |
-          python -c "import json,pathlib; r=json.loads(pathlib.Path('paper/DOCX_FREEZE.json').read_text(encoding='utf-8')); assert r.get('frozen') is True, r; assert pathlib.Path('paper/main.docx').is_file(); print('frozen OK')"
+        run: python tools/paper_check.py --require --strict
 
-      - name: repo smoke test (scaffold -> run_all; Word step skipped without pandoc)
+      - name: repo smoke test (scaffold -> run_all -> paper_check)
         run: python scripts/smoke_test.py
 
       - name: Upload run status and figures
@@ -64,6 +62,7 @@ jobs:
           name: demo-drug-decay-windows
           path: |
             examples/demo-drug-decay/reports/RUN_STATUS.md
+            examples/demo-drug-decay/reports/PAPER_CHECK.md
             examples/demo-drug-decay/reports/_logs/
             examples/demo-drug-decay/figures/FIGURE_REVIEW.md
             examples/demo-drug-decay/figures/*/*.png

@@ -19,7 +19,7 @@
 | 数据图 | 已完成 | `figures/fig02_q1_fit`, `fig03_q2_regimens`, `fig04_sensitivity` | `figures/FIGURE_REVIEW.md` FAIL 0 / WARN 0；PNG 已人工看过（review.json human 段） |
 | 示意图（drawio） | 已完成-有已知问题 | `figures/fig01_roadmap/` (`.drawio` + PNG/PDF + `REDRAW_NOTES.md`) | **草稿**，交稿前需在 draw.io 人工重画：缩写多、箭头与 R1–R4 非严格一对一、公式为纯文本 |
 | 稳健性 / 敏感性 | 已完成 | `reports/ROBUSTNESS_REPORT.md`, `code/30_sensitivity.py` | 局部扰动 / Monte Carlo(2000, seed 42) / 个体复算 / 清洗对比 |
-| Word 初稿 | 已完成（已冻结） | `paper/main.docx`（PDF 预览 14 页，4 图、9 编号表、8 编号公式） | 2026-09-07 于 Devin/Linux 生成并 `--freeze`；`--strict` 审计 0 错 0 警；正文排版细节（表格列宽、分页）未精修，用户在 Word 里直接调 |
+| 论文正文 | 已完成 | `paper/sections/*.md`（10 个文件：摘要 + 9 章）, `paper/paper.yaml` | 4 图、9 编号表、8 编号公式；`python tools/paper_check.py --require --strict` FAIL 0 / WARN 0（`reports/PAPER_CHECK.md`） |
 | 一致性与质量审计 | 已完成-轻量 | 本文件 §已知问题 | 数值链 results → RESULTS_REPORT → 论文章节逐项核对过；未单独产出 `reports/AUDIT_*.md` |
 
 状态取值：未开始 / 进行中 / 已完成 / 已完成-有已知问题。
@@ -28,25 +28,24 @@
 
 - 时间 / 平台：2026-09-07，Ubuntu 22.04 / Python 3.10.12（Devin 侧）
 - 命令：`python run_all.py --strict`；另在删除 `results/`、`data/clean/`、各图 PDF/PNG/SVG 与数据快照后的干净副本上重跑，12 步全 OK，`results/` 与原副本逐字节一致
-- 结果：`reports/RUN_STATUS.md` FAIL 0 / WARN 0；`python tools/portability_check.py .` FAIL 0
-- **Windows（GitHub Actions windows-latest，Python 3.11，2026-09-07）**：`doctor` / `run_all --strict` / `figure_index --check` / `portability_check` / 冻结检查全部通过（工作流 `windows-smoke`，run 34083900482）。同一工作流里仓库级 `scripts/smoke_test.py` 曾因 Windows 控制台 cp1252 打印中文报错，已修（与项目无关）。**未在本机 Windows + 真实 Word 环境实测**，接手时请先 `python doctor.py`。
+- 结果：`reports/RUN_STATUS.md` FAIL 0 / WARN 0（含 `paper` 阶段）；`python tools/portability_check.py .` FAIL 0
+- **Windows（GitHub Actions windows-latest，Python 3.11，2026-09-07）**：`doctor` / `run_all --strict` / `figure_index --check` / `portability_check` 全部通过（工作流 `windows-smoke`，run 34083900482）。同一工作流里仓库级 `scripts/smoke_test.py` 曾因 Windows 控制台 cp1252 打印中文报错，已修（与项目无关）。`paper` 阶段与 `paper_check.py` 是之后加入的，尚未在 Windows 上实测。**未在本机 Windows 实测**，接手时请先 `python doctor.py`。
 
 ## 已知问题 / 需要人工判断
 
-- [ ] 示意图 `fig01_roadmap` 需人工重画（见 `figures/fig01_roadmap/REDRAW_NOTES.md`），重画后替换 Word 图 1
+- [ ] 示意图 `fig01_roadmap` 需人工重画（见 `figures/fig01_roadmap/REDRAW_NOTES.md`），导出后覆盖同名 PDF/PNG，正文引用路径不变
 - [x] 数据图版式自检 WARN 已清零（`figures/FIGURE_REVIEW.md`）
-- [ ] Word 表格列宽/跨页由脚本按内容估算，个别表头仍换行；在 Word 里手工微调即可，不要重生成
+- [x] 论文章节自检 FAIL 0 / WARN 0（`reports/PAPER_CHECK.md`）；`05_problem1.md` 中公式 mad/nls/derived/delta 已定义但未被 `@eq:` 引用（INFO，属逐步推导，可不处理）
 - [ ] 治疗窗 3–12 mg/L、剂量、参数均为合成设定，不对应任何真实药物；正文已声明，勿当作临床结论
 - [ ] 参考文献 6 条为经典教材/论文与 SciPy，未逐条核对页码
 
 ## 下一步（按优先级）
 
-1. 在 draw.io 打开 `figures/fig01_roadmap/fig01_roadmap.drawio` 按 `REDRAW_NOTES.md` 重画，导出后替换 Word 图 1。
-2. Word 内排版精修：表 2–9 列宽、图题位置、目录刷新（F9）。
-3. 若要作为真实赛题模板使用：替换 `data/raw/`、`problem/`，重跑 `run_all.py`，比对 `RESULTS_REPORT.md` 差异后再改 Word。
+1. 在 draw.io 打开 `figures/fig01_roadmap/fig01_roadmap.drawio` 按 `REDRAW_NOTES.md` 重画，导出覆盖 `fig01_roadmap.pdf/.png`。
+2. 若要作为真实赛题模板使用：替换 `data/raw/`、`problem/`，重跑 `run_all.py`，比对 `RESULTS_REPORT.md` 差异后再改 `paper/sections/*.md`，最后 `python run_all.py paper`。
 
 ## 给下一位的提醒
 
-- Word 是正文唯一真源；数字改动必须先改代码/结果报告，再改 Word。
+- 正文只有 `paper/sections/*.md` 一份；数字改动必须先改代码/结果报告，再改正文，改完跑 `python run_all.py paper`。
 - `data/raw/` 别动；`figures/*/manifest.json`、`review.json`、`figures/README.md` 等是自动生成的，别手改。
 - 跑不起来先 `python doctor.py`。

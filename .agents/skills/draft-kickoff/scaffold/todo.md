@@ -9,16 +9,16 @@
 - [ ] 2. 编程实现与数据图 → `code/`, `results/`, `reports/RESULTS_REPORT.md`, `figures/figNN_*/`
 - [ ] 2.5 稳健性 / 敏感性 → `reports/ROBUSTNESS_REPORT.md`
 - [ ] 3. 示意图草稿 → `figures/figNN_*/*.drawio` + `REDRAW_NOTES.md`
-- [ ] 4. Markdown 章节 → `paper/sections/*.md`
-- [ ] 5. Word 初稿生成并冻结 → `paper/main.docx`, `paper/DOCX_FREEZE.json`
-- [ ] 6. 验收与审计 → `reports/AUDIT_*.md`
-- [ ] 7. `python run_all.py` 全绿；`HANDOFF.md` 更新
+- [ ] 4. 论文正文（摘要 + 全部章节 + 参考文献）→ `paper/sections/*.md`, `paper/paper.yaml`；`python run_all.py paper` FAIL 0
+- [ ] 5. 验收与审计 → `reports/AUDIT_*.md`
+- [ ] 6. `python run_all.py` 全绿；`HANDOFF.md` 更新
 
 ## 交稿前人工必做
 
-- [ ] 所有示意图按 `REDRAW_NOTES.md` 手工重画并替换 Word 中的图
+- [ ] 所有示意图按 `REDRAW_NOTES.md` 手工重画，覆盖同名 PNG/PDF（正文引用路径不变）
 - [ ] `figures/FIGURE_REVIEW.md` 中 FAIL 清零、WARN 逐条确认
-- [ ] Word 中每个数字与 `reports/RESULTS_REPORT.md` 核对一遍
+- [ ] `reports/PAPER_CHECK.md` 中 FAIL 清零、WARN 逐条确认
+- [ ] `paper/sections/*.md` 中每个数字与 `reports/RESULTS_REPORT.md` 核对一遍
 - [ ] 参考文献真实可查
 
 ## 遗留 / 待确认

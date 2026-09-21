@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """run_all.py — 一键复现本项目（Windows / Linux / macOS 通用，纯 Python，不需要 bash）。
 
-    python run_all.py              # = all：code → figures → figcheck → check
+    python run_all.py              # = all：code → figures → figcheck → paper → check
     python run_all.py code         # 只跑 code/*.py（数据处理 + 模型，按文件名顺序）
     python run_all.py figures      # 只重画 figures/*/make_figure.py
     python run_all.py figcheck     # 图的字体/版式自检 + 重建 figures/README.md、FIGURE_REVIEW.md
+    python run_all.py paper        # 论文章节 paper/sections/*.md 自检（交叉引用/图路径/占位符/内部名泄露）
     python run_all.py check        # 环境体检 + 可移植性扫描
     python run_all.py figures fig02_q1_fit   # 只重画一张图
     python run_all.py --continue   # 某一步失败不中断，最后汇总
@@ -12,10 +13,9 @@
 阶段约定（不用配置文件，靠目录与命名）：
 - code/NN_*.py 按数字前缀顺序执行（00_ 数据处理、10_/20_ 各问模型、90_ 汇总），前缀 _ 的文件跳过；
 - figures/<fig_id>/make_figure.py 每个文件夹一张图；
+- paper/sections/NN_*.md 每个文件一章，由 tools/paper_check.py 检查（没有章节文件时视为尚未写作，不算失败）；
 - 所有脚本以项目根目录为工作目录、用当前解释器（sys.executable）运行、强制 UTF-8；
 - 每次运行写日志到 reports/_logs/run_<时间>.log 与 reports/RUN_STATUS.md（最近一次各阶段结果）。
-
-Word 初稿（paper/main.docx）不在此脚本范围：它由建模侧一次性生成并冻结，之后直接用 Word 编辑。
 """
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 TOOLS = ROOT / "tools"
 LOG_DIR = ROOT / "reports" / "_logs"
-STAGES = ("code", "figures", "figcheck", "check")
+STAGES = ("code", "figures", "figcheck", "paper", "check")
 
 
 def _env() -> dict[str, str]:
@@ -108,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("stages", nargs="*", default=["all"], help="all | " + " | ".join(STAGES) + " | 图文件夹名")
     ap.add_argument("--continue", dest="keep_going", action="store_true", help="失败不中断")
-    ap.add_argument("--strict", action="store_true", help="figcheck 中版式 WARN 也视为失败")
+    ap.add_argument("--strict", action="store_true", help="figcheck / paper 中 WARN 也视为失败")
     args = ap.parse_args(argv)
 
     if hasattr(sys.stdout, "reconfigure"):
@@ -149,6 +149,12 @@ def main(argv: list[str] | None = None) -> int:
             lint_cmd.append("--strict")
         r.run("figcheck", "fig_layout_lint", lint_cmd, optional=not args.strict)
         r.run("figcheck", "figure_index", [py, str(TOOLS / "figure_index.py")], optional=True)
+
+    if "paper" in wanted:
+        paper_cmd = [py, str(TOOLS / "paper_check.py")]
+        if args.strict:
+            paper_cmd.append("--strict")
+        r.run("paper", "paper_check", paper_cmd)
 
     if "check" in wanted:
         r.run("check", "doctor", [py, str(ROOT / "doctor.py")], optional=True)

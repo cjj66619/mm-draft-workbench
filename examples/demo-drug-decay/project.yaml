@@ -15,10 +15,13 @@ entrypoints:
   doctor: python doctor.py
   reproduce: python run_all.py
   figures_only: python run_all.py figures
+  paper_check: python run_all.py paper
 paper:
-  docx: paper/main.docx
-  source_of_truth: docx        # docx | markdown ；冻结后为 docx
-  markdown_sections: paper/sections
+  format: markdown             # 一章一个 .md，LaTeX 公式，@fig:/@tbl:/@eq: 交叉引用
+  meta: paper/paper.yaml       # 题目 / 关键词 / 章节顺序
+  sections: paper/sections
+  abstract: paper/sections/00_abstract.md
+  check_report: reports/PAPER_CHECK.md
 figures:
   layout: folder               # 一图一文件夹
   index: figures/README.md

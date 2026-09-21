@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """smoke_test.py — 仓库级冒烟测试（纯 Python，Windows / Linux / macOS 通用）。
 
-    python scripts/smoke_test.py                 # 新建临时项目 → doctor → run_all → 写一节 Markdown → build_docx
+    python scripts/smoke_test.py                 # 新建临时项目 → doctor → run_all → 写最小 Markdown 章节 → run_all paper
     python scripts/smoke_test.py --keep          # 保留临时项目目录便于排查
-    python scripts/smoke_test.py --require-docx  # 没有 pandoc 时视为失败（默认没有 pandoc 则跳过 Word 步骤）
 
 检查点：
-1. new_draft_project.py 能生成骨架，doctor.py 通过；
-2. run_all.py 在模板代码/模板图上全绿（reports/RUN_STATUS.md 无 FAIL）；
-3. 有 pandoc 时，docx-build 能把一节 Markdown 合成 paper/main.docx 并通过 --strict 审计。
+1. new_draft_project.py 能生成骨架（含 tools/paper_check.py），doctor.py 通过；
+2. run_all.py 在模板代码/模板图上全绿（reports/RUN_STATUS.md 无 FAIL；没有章节时 paper 阶段不算失败）；
+3. 写入摘要 + 一章 Markdown 后，`run_all.py paper` 通过（FAIL 0）并生成 reports/PAPER_CHECK.md；
+4. 故意写入占位符 / 未定义引用 / 内部名泄露的章节时，paper_check.py 必须报 FAIL。
 """
 from __future__ import annotations
 
@@ -22,7 +22,6 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 NEW_PROJECT = REPO / ".agents" / "skills" / "draft-kickoff" / "scripts" / "new_draft_project.py"
-BUILD_DOCX = REPO / ".agents" / "skills" / "docx-build" / "scripts" / "build_docx.py"
 
 SECTION = """# 一、问题重述
 
@@ -46,15 +45,20 @@ Table: 冒烟测试表 {#tbl:smoke}
 结果见 @tbl:smoke。
 """
 
-ABSTRACT = """这是冒烟测试用的摘要：用指数模型 $y = a e^{-bt} + c$ 拟合一组合成观测值，并给出参数估计。
+ABSTRACT = """这是冒烟测试用的摘要：用指数模型 $y = a e^{-bt} + c$ 拟合一组合成观测值，并给出参数估计，得到 $a = 1.0$、$b = 0.2$。
 
 **关键词**：冒烟测试；指数模型
 """
 
+BAD_SECTION = """# 二、问题分析
+
+本节数据来自 reports/RESULTS_REPORT.md，结果见 @fig:missing。[TODO: 补充分析]
+"""
+
 EXPECTED_FILES = (
     "AGENTS.md", "HANDOFF.md", "plan.md", "todo.md", "doctor.py", "run_all.py", "requirements.txt",
-    "code/common.py", "tools/mm_plot_style.py", "tools/portability_check.py", "figures/_template_figure/make_figure.py",
-    "paper/paper.yaml",
+    "code/common.py", "tools/mm_plot_style.py", "tools/paper_check.py", "tools/portability_check.py",
+    "figures/_template_figure/make_figure.py", "paper/paper.yaml", "paper/README.md",
 )
 
 
@@ -65,21 +69,23 @@ def _env() -> dict[str, str]:
     return env
 
 
-def run(cmd: list[str], cwd: Path, label: str) -> None:
+def run(cmd: list[str], cwd: Path, label: str, expect_fail: bool = False) -> str:
     print(f"\n[smoke] {label}\n  $ {' '.join(Path(c).name if Path(c).is_absolute() else c for c in cmd)}", flush=True)
     p = subprocess.run(cmd, cwd=str(cwd), env=_env(), text=True, encoding="utf-8", errors="replace",
                        capture_output=True)
-    tail = (p.stdout + p.stderr)[-3000:]
-    if p.returncode != 0:
+    out = p.stdout + p.stderr
+    tail = out[-3000:]
+    if (p.returncode != 0) != expect_fail:
         print(tail)
-        raise SystemExit(f"[smoke] FAIL: {label} (exit {p.returncode})")
+        want = "非零" if expect_fail else "0"
+        raise SystemExit(f"[smoke] FAIL: {label} (exit {p.returncode}，预期 {want})")
     print(tail.strip().splitlines()[-1] if tail.strip() else "(no output)")
+    return out
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--keep", action="store_true", help="保留临时项目目录")
-    ap.add_argument("--require-docx", action="store_true", help="缺 pandoc 时视为失败")
     ap.add_argument("--dest", type=Path, default=None, help="临时项目位置（默认系统临时目录）")
     args = ap.parse_args()
 
@@ -104,23 +110,20 @@ def main() -> None:
             raise SystemExit("[smoke] FAIL: RUN_STATUS.md 含 FAIL")
         run([py, str(Path("tools") / "portability_check.py"), "."], proj, "portability_check")
 
-        if shutil.which("pandoc") is None and not (Path.home() / ".local" / "bin" / "pandoc").exists():
-            msg = "[smoke] 未找到 pandoc，跳过 Word 步骤"
-            if args.require_docx:
-                raise SystemExit(msg + "（--require-docx）")
-            print(msg)
-        else:
-            sections = proj / "paper" / "sections"
-            sections.mkdir(parents=True, exist_ok=True)
-            (sections / "00_abstract.md").write_text(ABSTRACT, encoding="utf-8")
-            (sections / "01_restatement.md").write_text(SECTION, encoding="utf-8")
-            run([py, str(BUILD_DOCX), "--strict"], proj, "build_docx --strict")
-            docx = proj / "paper" / "main.docx"
-            if not docx.is_file() or docx.stat().st_size < 10_000:
-                raise SystemExit("[smoke] FAIL: paper/main.docx 未生成或过小")
-            run([py, str(BUILD_DOCX), "--freeze"], proj, "build_docx --freeze")
-            if not (proj / "paper" / "DOCX_FREEZE.json").is_file():
-                raise SystemExit("[smoke] FAIL: 未写 DOCX_FREEZE.json")
+        sections = proj / "paper" / "sections"
+        sections.mkdir(parents=True, exist_ok=True)
+        (sections / "00_abstract.md").write_text(ABSTRACT, encoding="utf-8")
+        (sections / "01_restatement.md").write_text(SECTION, encoding="utf-8")
+        run([py, "run_all.py", "paper"], proj, "run_all.py paper")
+        report = proj / "reports" / "PAPER_CHECK.md"
+        if not report.is_file() or "**PASS**" not in report.read_text(encoding="utf-8"):
+            raise SystemExit("[smoke] FAIL: reports/PAPER_CHECK.md 未生成或结论非 PASS")
+
+        (sections / "02_analysis.md").write_text(BAD_SECTION, encoding="utf-8")
+        out = run([py, str(Path("tools") / "paper_check.py")], proj, "paper_check.py 应对坏章节报 FAIL", expect_fail=True)
+        for token in ("placeholder", "leak", "xref_undefined"):
+            if token not in out:
+                raise SystemExit(f"[smoke] FAIL: paper_check.py 未报出 {token}")
         print("\n[smoke] PASS")
     finally:
         if args.keep:

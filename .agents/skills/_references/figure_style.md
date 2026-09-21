@@ -50,7 +50,7 @@ A4 页边距 2.5 cm，版心 16 cm：
 
 | `figsize(width)` | 宽 | 场景 |
 | --- | --- | --- |
-| `"full"` | 14 cm | 单张整宽图，Typst `image(width: 88%)` / LaTeX `width=0.88\textwidth` 时实际约 14 cm，字号保真 |
+| `"full"` | 14 cm | 单张整宽图，按 A4 版心 16 cm 的约 88% 排入时实际约 14 cm，字号保真 |
 | `"two-thirds"` | 10.5 cm | 单张竖向或方形图 |
 | `"half"` | 7.5 cm | 两图并排 |
 | `"third"` | 5 cm | 三图并排 |
@@ -59,7 +59,7 @@ A4 页边距 2.5 cm，版心 16 cm：
 
 导出（`save_fig`）：
 
-- [mm] **PDF 为主**：论文（Typst/LaTeX）直接引用；`docx-export` 用 PyMuPDF 把 PDF 转 300 dpi PNG 嵌入 Word。
+- [mm] **PDF 为主**：论文正文 `paper/sections/*.md` 直接引用 PDF；PNG 由 PyMuPDF 从 PDF 渲染（300 dpi）用于预览与审图。
 - PNG 300 dpi：预览、报告、`RESULTS_REPORT.md`。
 - [Nature] SVG（`formats=("pdf","png","svg")`）：`svg.fonttype="none"` 保留可编辑文字，用于需要二次加工的图。
 - `savefig.bbox="tight"`, `pad_inches=0.02`，白底。
@@ -69,8 +69,8 @@ A4 页边距 2.5 cm，版心 16 cm：
 
 **根因**（[环境]，已复现）：
 
-1. Linux 常见的 `fonts-noto-cjk` 是 **CFF 轮廓（OTF/`OTTO`）**。Matplotlib `pdf.fonttype=42` 只会把字体当 TrueType 嵌入，遇到 CFF 轮廓会写出非法字体流；PDF 阅读器/PyMuPDF 渲染出方块或错字，`docx-export` 转 PNG 后随之乱码。
-2. `pdf.fonttype=3` 能渲染，但文字被拆成 Type3 路径，PyMuPDF/Word 提取不到中文，无法检索、无法审计。
+1. Linux 常见的 `fonts-noto-cjk` 是 **CFF 轮廓（OTF/`OTTO`）**。Matplotlib `pdf.fonttype=42` 只会把字体当 TrueType 嵌入，遇到 CFF 轮廓会写出非法字体流；PDF 阅读器/PyMuPDF 渲染出方块或错字，PDF→PNG 后随之乱码。
+2. `pdf.fonttype=3` 能渲染，但文字被拆成 Type3 路径，PyMuPDF 提取不到中文，无法检索、无法审计。
 3. Matplotlib 按字体文件内部 family 名注册，本机 Noto CJK TTC 被识别为 `Noto Sans CJK JP` 而不是 `SC`；直接写死 `font.family="Noto Sans CJK SC"` 会 `findfont` 失败回退到 DejaVu Sans，中文变空白/方块。
 
 **方案**（`mm_plot_style.resolve_fonts`）：

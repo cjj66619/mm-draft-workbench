@@ -8,6 +8,6 @@
 | `_references/figure_style.md`、`mm_plot_style.py` 的规范来源 | [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills) | Apache-2.0 | 参考设计原则自行实现，未 vendored 源代码 |
 | `scibox-diagram` | [jihe520/sci-box](https://github.com/jihe520/sci-box) `skills/` | 上游未附独立 LICENSE，按 MathModelAgent 同等条款理解 | `scripts/export_figure.py`：Windows/macOS draw.io 可执行文件探测、UTF-8 子进程、目录递归、缺失时手动导出提示 |
 | `data-auditor-cleaner` `robustness-checker` `consistency-auditor` `quality-assurance-auditor` | [zhnnky329/MathModeling-skills](https://github.com/zhnnky329/MathModeling-skills) | MIT（Copyright (c) 2026 Zhijun Zhang） | 沿用 mm-workbench 的路径适配说明 |
-| `draft-kickoff` `docx-build` | 本仓库原创（`docx-build/scripts/build_docx.py` 由 mm-workbench `docx-export/scripts/paper2docx.py` 改写为 Markdown 输入） | 与本仓库相同 | — |
+| `draft-kickoff` | 本仓库原创（`scripts/paper_check.py` 的占位符/内部名/交叉引用审计思路源自 mm-workbench `docx-export/scripts/paper2docx.py`，已重写为纯 Markdown 检查） | 与本仓库相同 | — |
 
 字体：输出项目 `tools/fonts/wqy-microhei.ttc`（文泉驿微米黑）© Qianqian Fang & WenQuanYi Project，Apache-2.0 / GPLv3 含字体嵌入例外双许可，随项目分发用于跨平台出图一致（说明见项目内 `tools/fonts/LICENSE.md`）。

@@ -4,13 +4,7 @@
 本文件只收录**正文格式**（摘要页之后的一切排版参数）。**封面页不在本文件范围**：封面（赛徽、届数、
 学校、队号、队员）年年变化，由用户拿到当届官方模板后自行替换，工作流不得把封面写死。
 
-三处消费本规范：
-
-- `5writing/templates/zh/huaweibei*`：Typst / LaTeX 模板的排版参数（PDF 交稿）。
-- `docx-export/scripts/paper2docx.py`：`build_reference_docx()` 与后处理（DOCX 交稿）。
-- `6verity` / `docx-export --strict`：格式审计的判据。
-
-修改任一实现时先改本文件，再同步三处；单位换算：1 pt = 20 twips，1 字符 = 正文字号（12 pt = 240 twips）。
+本工作台只产出 Markdown 章节，不做排版；本文件供 `draft-writing` / `6verity` 判断**内容侧**约束（表格能否放进 16 cm 版心、摘要篇幅、图表题与公式写法、参考文献格式）。单位换算：1 pt = 20 twips，1 字符 = 正文字号（12 pt = 240 twips）。
 
 ---
 
@@ -43,7 +37,6 @@
 | 段内小标题 | 官方示例：`问题一：数据分析与故障特征提取` 为**加粗独立段**，首行缩进 2 字符（`firstLine=482`），非标题样式，不进目录 |
 
 Linux 无宋体/黑体时的回退（`scripts/setup_env.sh` 已安装）：Times New Roman → Liberation Serif（同字宽）；宋体 → Noto Serif CJK SC；黑体 → Noto Sans CJK SC；楷体 → AR PL KaitiM GB。
-DOCX 里写字体名即可（由打开者的 Word 解析），PDF 引擎需要在模板里列回退链：Typst 见 `5writing/templates/zh/huaweibei/lib.typ`（默认 Linux 字体，`--input official-fonts=true` 切换官方字体名），LaTeX 见 `huaweibei-latex/main.tex` 的 `\IfFontExistsTF`。
 数据图（matplotlib）不走这套字体：中文必须用 TrueType 字体（文泉驿微米黑等，Noto CJK 为 CFF 会导致 PDF 乱码），由 `3coding-visual/scripts/mm_plot_style.py` 自动选择，见 `_references/figure_style.md`。
 
 ## 3. 标题（三级）
@@ -110,7 +103,7 @@ DOCX 里写字体名即可（由打开者的 Word 解析），PDF 引擎需要�
 | 篇幅 | 摘要不超过两页 |
 | 分页 | 关键词后分节/分页，进入目录页 |
 
-隶书/华文新魏在 Linux 无等价字体，DOCX 写字体名即可（Word 端有），PDF 引擎回退到黑体。
+隶书/华文新魏在 Linux 无等价字体；正文只需给出文字内容，字体由排版阶段决定。
 
 ## 8. 目录页
 
