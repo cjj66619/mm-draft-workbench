@@ -31,7 +31,7 @@ fig03_q2_regimens/make_figure.py — 问题二：四种给药方案的浓度–�
 | 文件 | 说明 |
 | --- | --- |
 | `make_figure.py` | 绘图脚本，在项目根目录运行 `python figures/fig03_q2_regimens/make_figure.py` 重新生成 |
-| `fig03_q2_regimens.pdf` | PDF 输出（论文/Word 用） |
+| `fig03_q2_regimens.pdf` | PDF 输出（论文引用） |
 | `fig03_q2_regimens.png` | PNG 输出（预览） |
 | `fig03_q2_regimens.svg` | SVG 输出（可编辑矢量） |
 | `q2_profiles.csv` | 数据快照，来源 `results/q2_profiles.csv`；列：regimen, label, t, conc |
@@ -55,7 +55,7 @@ fig03_q2_regimens/make_figure.py — 问题二：四种给药方案的浓度–�
 
 - 无发现
 
-字体：Latin `Liberation Sans` / 中文 `WenQuanYi Micro Hei`；生成时间 2026-09-07T04:22:39
+字体：Latin `Liberation Sans` / 中文 `WenQuanYi Micro Hei`；生成时间 2026-09-21T08:36:38
 
 ## 人工备注
 

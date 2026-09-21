@@ -32,7 +32,7 @@ fig04_sensitivity/make_figure.py — 问题三：推荐方案对参数扰动的�
 | 文件 | 说明 |
 | --- | --- |
 | `make_figure.py` | 绘图脚本，在项目根目录运行 `python figures/fig04_sensitivity/make_figure.py` 重新生成 |
-| `fig04_sensitivity.pdf` | PDF 输出（论文/Word 用） |
+| `fig04_sensitivity.pdf` | PDF 输出（论文引用） |
 | `fig04_sensitivity.png` | PNG 输出（预览） |
 | `fig04_sensitivity.svg` | SVG 输出（可编辑矢量） |
 | `q3_sens_local.csv` | 数据快照，来源 `results/q3_sens_local.csv`；列：regimen, param, delta, css_max, css_min, frac_in_window, in_window, rel_change_css_min, elasticity_css_min, rel_change_css_max |
@@ -60,7 +60,7 @@ fig04_sensitivity/make_figure.py — 问题三：推荐方案对参数扰动的�
 
 - 无发现
 
-字体：Latin `Liberation Sans` / 中文 `WenQuanYi Micro Hei`；生成时间 2026-09-07T04:22:41
+字体：Latin `Liberation Sans` / 中文 `WenQuanYi Micro Hei`；生成时间 2026-09-21T08:36:40
 
 ## 人工备注
 

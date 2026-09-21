@@ -34,7 +34,7 @@ fig02_q1_fit/make_figure.py — 问题一：Bateman 模型拟合结果与残差�
 | 文件 | 说明 |
 | --- | --- |
 | `make_figure.py` | 绘图脚本，在项目根目录运行 `python figures/fig02_q1_fit/make_figure.py` 重新生成 |
-| `fig02_q1_fit.pdf` | PDF 输出（论文/Word 用） |
+| `fig02_q1_fit.pdf` | PDF 输出（论文引用） |
 | `fig02_q1_fit.png` | PNG 输出（预览） |
 | `fig02_q1_fit.svg` | SVG 输出（可编辑矢量） |
 | `q1_fitted.csv` | 数据快照，来源 `results/q1_fitted.csv`；列：subject, t, y, y_hat, resid |
@@ -57,7 +57,7 @@ fig02_q1_fit/make_figure.py — 问题一：Bateman 模型拟合结果与残差�
 
 - 无发现
 
-字体：Latin `Liberation Sans` / 中文 `WenQuanYi Micro Hei`；生成时间 2026-09-07T04:22:37
+字体：Latin `Liberation Sans` / 中文 `WenQuanYi Micro Hei`；生成时间 2026-09-21T08:36:37
 
 ## 人工备注
 
